@@ -11,8 +11,29 @@ class HTSLM2 extends ZigBeeDevice {
 
   async onNodeInit({ zclNode }) {
     this.log('HT-SLM-2 Node has been initialized');
-    // Abonner på endringer i doorLock-klyngen
+
+    this.printNode();
+
+    if (this.isFirstInit()) {
+      await this.configureAttributeReporting([{
+        endpointId: 1,
+        cluster: CLUSTER.POWER_CONFIGURATION,
+        attributeName: 'batteryPercentageRemaining',
+        minInterval: 65535,
+        maxInterval: 0,
+        minChange: 0,
+      }]);
+    }
+
+    // measure_battery // alarm_battery
+    zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
+      .on('attr.batteryPercentageRemaining', (value) => {
+        this.log('measured batt', value);
+        this.setCapabilityValue('measure_battery', value);
+      });
+
     try {
+      // Abonner på endringer i doorLock-klyngen
       const doorLockCluster = zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME];
       if (doorLockCluster) {
         doorLockCluster.on('attr.lockState', this.onLockStateChange.bind(this));
