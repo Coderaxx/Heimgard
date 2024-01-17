@@ -1,2 +1,3 @@
 # Heimgard
- Heimgard app for Homey Pro (2019-2023)
+
+Welcome to Heimgard. Simple, flexible and secure.

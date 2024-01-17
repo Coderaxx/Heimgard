@@ -1,0 +1,28 @@
+{
+  "id": "com.coderax.heimgard",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Heimgard"
+  },
+  "description": {
+    "en": "Welcome to Heimgard. Simple, flexible and secure."
+  },
+  "category": [
+    "security"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Jesper Grimstad",
+    "email": "jesper.grimstad@hotmail.com"
+  }
+}
