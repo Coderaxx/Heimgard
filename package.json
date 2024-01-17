@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
+    "lint-fix": "eslint --ext .js,.ts --ignore-path .gitignore . --fix"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.1",
@@ -11,5 +12,9 @@
     "@types/node": "^20.11.5",
     "eslint": "^7.32.0",
     "eslint-config-athom": "^3.1.3"
+  },
+  "dependencies": {
+    "homey-zigbeedriver": "^2.1.4",
+    "zigbee-clusters": "^2.4.0"
   }
 }

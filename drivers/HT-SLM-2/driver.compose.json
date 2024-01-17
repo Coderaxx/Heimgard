@@ -1,0 +1,62 @@
+{
+    "name": {
+        "en": "Smart Electronic Door Lock"
+    },
+    "class": "lock",
+    "capabilities": [
+        "measure_battery",
+        "alarm_battery",
+        "lock_mode",
+        "locked",
+        "alarm_tamper"
+    ],
+    "platforms": [
+        "local"
+    ],
+    "connectivity": [
+        "zigbee"
+    ],
+    "zigbee": {
+        "manufacturerName": "Heimgard Technologies",
+        "productId": [
+            "HT-SLM-2"
+        ],
+        "endpoints": {
+            "1": {
+                "clusters": [
+                    0,
+                    1,
+                    2,
+                    5,
+                    6,
+                    257
+                ],
+                "bindings": [
+                    0,
+                    1
+                ]
+            }
+        }
+    },
+    "pair": [
+        {
+            "id": "list_devices",
+            "template": "list_devices",
+            "navigation": {
+                "next": "add_devices"
+            },
+            "options": {
+                "singular": true
+            }
+        },
+        {
+            "id": "add_devices",
+            "template": "add_devices"
+        }
+    ],
+    "images": {
+        "small": "{{driverAssetsPath}}/images/small.png",
+        "large": "{{driverAssetsPath}}/images/large.png",
+        "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    }
+}
