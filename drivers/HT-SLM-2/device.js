@@ -9,8 +9,10 @@ debug(true);
 
 class HTSLM2 extends ZigBeeDevice {
 
-  async onNodeInit({ zclNode }) {
+  async onNodeInit({ zclNode, node }) {
     this.log('HT-SLM-2 Node has been initialized');
+
+    this.log('Node:', node);
 
     this.printNode();
 
