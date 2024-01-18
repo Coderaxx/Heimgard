@@ -14,41 +14,56 @@ class HTSLM2 extends ZigBeeDevice {
         this.enableDebug();
         this.printNode();
 
-        if (this.isFirstInit()) {
-            // Register measure_battery capability and configure attribute reporting
-            this.batteryThreshold = 20;
-            await this.configureAttributeReporting([
-                {
-                    endpointId: 1,
-                    cluster: CLUSTER.POWER_CONFIGURATION,
-                    attributeName: 'batteryPercentageRemaining',
-                    minInterval: 0, //??
-                    maxInterval: 1500,
-                    minChange: 0
-                },
-            ]);
+        // Les låsens tilstand
+        try {
+            const attributes = await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].readAttributes([0, 1, 3, 4, 5, 32, 257]);
+            this.log('Lock state:', attributes);
+        } catch (error) {
+            this.error('Error reading lock state:', error);
         }
-        // measure_battery 
-        zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME].on('attr.batteryPercentageRemaining', this.onBatteryPercentageRemainingAttributeReport.bind(this));
+
+        this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
+            get: 'batteryPercentageRemaining',
+            report: 'batteryPercentageRemaining',
+            reportOpts: {
+                configureAttributeReporting: {
+                    minInterval: 0, // Minimally once every hour
+                    maxInterval: 60000, // Maximally once every ~16 hours
+                    minChange: 1,
+                },
+            },
+            endpoint: 1, // Default is 1
+            getOpts: {
+                getOnStart: true,
+                getOnOnline: true,
+                pollInterval: 30000, // in ms
+            },
+        });
+
+        this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
+            get: 'DoorState',
+            report: 'DoorState',
+            reportOpts: {
+                configureAttributeReporting: {
+                    minInterval: 0, // Minimally once every hour
+                    maxInterval: 60000, // Maximally once every ~16 hours
+                    minChange: 1,
+                },
+            },
+            endpoint: 1, // Default is 1
+            getOpts: {
+                getOnStart: true,
+                getOnOnline: true,
+                pollInterval: 30000, // in ms
+            },
+        });
 
         this.log(CLUSTER.DOOR_LOCK);
-    }
 
-    // Håndterer endringer i låsens tilstand
-    onLockStateChange(value) {
-        this.log('Lock state changed:', value);
-        this.setCapabilityValue('locked', value === 'locked');
-    }
-
-    onEndDeviceAnnounce() {
-        this.log('device came online!');
-    }
-
-    onBatteryPercentageRemainingAttributeReport(batteryPercentageRemaining) {
-        this.log("measure_battery | powerConfiguration - batteryPercentageRemaining (%): ", batteryPercentageRemaining / 2);
-        //const batteryThreshold = this.getSetting('batteryThreshold') || 20;
-        this.setCapabilityValue('measure_battery', batteryPercentageRemaining / 2).catch(this.error);
-        //this.setCapabilityValue('alarm_battery', (batteryPercentageRemaining/2 < batteryThreshold) ? true : false).catch(this.error);
+        // Sett opp en handler for å lytte etter rapporter
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].on('report', (attribute, value) => {
+            this.log(`Received report for ${attribute}:`, value);
+        });
     }
 
     async onAdded() {
