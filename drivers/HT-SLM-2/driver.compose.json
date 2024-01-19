@@ -6,10 +6,7 @@
     "class": "lock",
     "capabilities": [
         "measure_battery",
-        "alarm_battery",
-        "lock_mode",
-        "locked",
-        "alarm_tamper"
+        "locked"
     ],
     "platforms": [
         "local"
@@ -31,7 +28,8 @@
                     4,
                     5,
                     32,
-                    257
+                    257,
+                    1280
                 ],
                 "bindings": [
                     3,

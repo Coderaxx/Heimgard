@@ -1,7 +1,7 @@
 'use strict';
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
-const { DoorLockCluster, CLUSTER, debug } = require('zigbee-clusters');
+const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
 
 // Enable debug logging of all relevant Zigbee communication
 debug(true);
@@ -14,15 +14,13 @@ class HTSLM2 extends ZigBeeDevice {
         this.enableDebug();
         this.printNode();
 
-        // Les låsens tilstand
-        try {
-            const attributes = await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].readAttributes([0, 1, 3, 4, 5, 32, 257]);
-            this.log('Lock state:', attributes);
-        } catch (error) {
-            this.error('Error reading lock state:', error);
-        }
+        //this.log(await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
+        this.log(await zclNode.endpoints[1].clusters.doorLock.readReportingConfiguration([27, 36, 40]));
+        this.log(await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
+        this.log(await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
+        this.log(await zclNode.endpoints[1].clusters.doorLock.writeAttribute(27, 0x00, 0x00, 0x00, true));
 
-        this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
+        /*this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
             get: 'batteryPercentageRemaining',
             report: 'batteryPercentageRemaining',
             reportOpts: {
@@ -38,11 +36,11 @@ class HTSLM2 extends ZigBeeDevice {
                 getOnOnline: true,
                 pollInterval: 30000, // in ms
             },
-        });
+        });*/
 
-        this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
-            get: 'DoorState',
-            report: 'DoorState',
+        /*this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
+            get: 36,
+            report: 36,
             reportOpts: {
                 configureAttributeReporting: {
                     minInterval: 0, // Minimally once every hour
@@ -56,14 +54,9 @@ class HTSLM2 extends ZigBeeDevice {
                 getOnOnline: true,
                 pollInterval: 30000, // in ms
             },
-        });
+        });*/
 
         this.log(CLUSTER.DOOR_LOCK);
-
-        // Sett opp en handler for å lytte etter rapporter
-        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].on('report', (attribute, value) => {
-            this.log(`Received report for ${attribute}:`, value);
-        });
     }
 
     async onAdded() {
