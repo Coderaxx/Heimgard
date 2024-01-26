@@ -24,5 +24,20 @@
   "author": {
     "name": "Jesper Grimstad",
     "email": "jesper.grimstad@hotmail.com"
-  }
+  },
+  "brandColor": "#000000",
+  "tags": {
+    "en": [
+      "heimgard",
+      "smart lock",
+      "door lock",
+      "lock",
+      "door",
+      "smart door lock",
+      "zigbee",
+      "security",
+      "home security"
+    ]
+  },
+  "source": "https://github.com/Coderaxx/Heimgard"
 }

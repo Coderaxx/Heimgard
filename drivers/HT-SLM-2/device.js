@@ -18,7 +18,6 @@ class HTSLM2 extends ZigBeeDevice {
         this.log(await zclNode.endpoints[1].clusters.doorLock.readReportingConfiguration([27, 36, 40]));
         this.log(await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
         this.log(await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
-        this.log(await zclNode.endpoints[1].clusters.doorLock.writeAttribute(27, 0x00, 0x00, 0x00, true));
 
         /*this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
             get: 'batteryPercentageRemaining',
