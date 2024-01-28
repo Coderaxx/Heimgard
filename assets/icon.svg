@@ -1,12 +1,1 @@
-<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg" fill="none">
- <g>
-  <title>Layer 1</title>
-  <g id="svg_1">
-   <path d="m16.74842,6.40539l-8.83447,0l0,47.189l8.83447,0l0,-47.189z" fill="black" id="svg_9"/>
-   <path d="m34.41725,6.40531l-8.8345,0l0,21.15648l8.8345,0l0,-21.15648z" fill="black" id="svg_10"/>
-   <path d="m25.58275,36.85909l4.4174,-4.4207l4.4173,4.4207l0,16.7356l-8.8347,0l0,-16.7356z" fill="black" id="svg_11"/>
-   <path d="m52.08605,6.40531l-8.8344,0l0,47.18898l8.8344,0l0,-47.18898z" fill="black" id="svg_12"/>
-  </g>
- </g>
-
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" xmlns:v="https://vecta.io/nano"><path fill="#000" d="M16.748 6.405H7.914v47.189h8.834V6.405zm17.669 0h-8.834v21.156h8.834V6.405zm-8.834 30.454L30 32.438l4.417 4.421v16.736h-8.835V36.859zM52.086 6.405h-8.834v47.189h8.834V6.405z"/></svg>

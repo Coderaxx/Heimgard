@@ -1,16 +1,18 @@
 {
   "id": "com.coderax.heimgard",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
     "local"
   ],
   "name": {
-    "en": "Heimgard"
+    "en": "Heimgard",
+    "no": "Heimgard"
   },
   "description": {
-    "en": "Welcome to Heimgard. Simple, flexible and secure."
+    "en": "Heimgard. Simple, flexible and secure.",
+    "no": "Heimgard. Simple, flexible and secure."
   },
   "category": [
     "security"
@@ -37,6 +39,21 @@
       "zigbee",
       "security",
       "home security"
+    ],
+    "no": [
+      "heimgard",
+      "smart lock",
+      "door lock",
+      "lock",
+      "door",
+      "smart door lock",
+      "zigbee",
+      "security",
+      "home security",
+      "dør",
+      "dørlås",
+      "smart dørlås",
+      "smartlås"
     ]
   },
   "source": "https://github.com/Coderaxx/Heimgard"
