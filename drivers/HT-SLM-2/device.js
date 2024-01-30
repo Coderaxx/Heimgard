@@ -18,17 +18,17 @@ class HTSLM2 extends ZigBeeDevice {
         this.enableDebug();
         this.printNode();
 
-        //this.log('discoverAttributesExtended', await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
+        this.log('discoverAttributesExtended', await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
         //this.log('readReportingConfiguration', await zclNode.endpoints[1].clusters.doorLock.readReportingConfiguration(["lockState", "lockType", "actuatorEnabled", "doorState", "doorOpenEvents", "doorClosedEvents"]));
-        /*const currentLockState = await zclNode.endpoints[1].clusters.doorLock.readAttributes(
-            ["lockState", "lockType", "actuatorEnabled", "doorState", "soundVolume", "language", "numberOfTotalUsersSupported", "enableLocalProgramming"],
+        const currentLockState = await zclNode.endpoints[1].clusters.doorLock.readAttributes(
+            ["lockState", "lockType", "doorState", "soundVolume", "language", "enableLocalProgramming"],
         ).catch(err => { this.error(err); });
-        this.log('Door Lock State: ' + JSON.stringify(currentLockState, null, 2));*/
+        this.log('Door Lock State: ' + JSON.stringify(currentLockState, null, 2));
 
-        this.log('discoverCommandsGenerated', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
-        this.log('discoverCommandsReceived', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
+        //this.log('discoverCommandsGenerated', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
+        //this.log('discoverCommandsReceived', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
 
-        this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
+        /*this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
             setParser(setValue) {
                 this.log('setParser', setValue);
@@ -55,27 +55,52 @@ class HTSLM2 extends ZigBeeDevice {
                 getOnOnline: true,
                 pollInterval: 1000 * 1000, // in ms
             },
+        });*/
+
+        if (this.isFirstInit()) {
+            await this.configureAttributeReporting([{
+                endpointId: 1,
+                cluster: CLUSTER.DOOR_LOCK,
+                attributeName: 'lockState',
+                minInterval: 0,
+                maxInterval: 60,
+                minChange: 1,
+            }]);
+
+            await this.configureAttributeReporting([{
+                endpointId: 1,
+                cluster: CLUSTER.DOOR_LOCK,
+                attributeName: 'soundVolume',
+                minInterval: 0,
+                maxInterval: 60,
+                minChange: 1,
+            }]);
+
+            await this.configureAttributeReporting([{
+                endpointId: 1,
+                cluster: CLUSTER.POWER_CONFIGURATION,
+                attributeName: 'batteryVoltage',
+                minInterval: 0,
+                maxInterval: 60,
+                minChange: 1,
+            }]);
+        }
+
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].on('lockState', lockState => {
+            this.log('Lock state changed to:', lockState);
         });
 
-        await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].on('response', async (data) => {
-            this.log('response', data);
-        });
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+            .on('attr.batteryVoltage', (batteryVoltage) => {
+                // handle reported attribute value
+                this.log('attr.batteryVoltage', batteryVoltage);
+            });
 
-        zclNode.endpoints[1].bind(
-            CLUSTER.DOOR_LOCK.NAME, new LockControlBoundCluster({
-                onLock: (payload) => {
-                    this.log('onLock', payload);
-                    this.setCapabilityValue('locked', true);
-                },
-                onUnlock: (payload) => {
-                    this.log('onUnlock', payload);
-                    this.setCapabilityValue('locked', false);
-                },
-                unlockWithTimeout: (payload) => {
-                    this.log('unlockWithTimeout', payload);
-                }
-            })
-        );
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+            .on('attr.batteryPercentageRemaining', (soundVolume) => {
+                // handle reported attribute value
+                this.log('attr.batteryPercentageRemaining', soundVolume);
+            });
 
         /*this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
             get: 'batteryVoltage',
@@ -136,6 +161,10 @@ class HTSLM2 extends ZigBeeDevice {
                 pollInterval: 30 * 1000, // in ms
             },
         });*/
+    }
+
+    async onEndDeviceAnnounce() {
+        this.log('HT-SLM-2 has been discovered');
     }
 
     async onAdded() {
