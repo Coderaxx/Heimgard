@@ -86,17 +86,23 @@ class HTSLM2 extends ZigBeeDevice {
             }]);
         }
 
-        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].on('lockState', lockState => {
-            this.log('Lock state changed to:', lockState);
-        });
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+            .on('attr.lockState', lockState => {
+                this.log('Lock state changed to:', lockState);
+            });
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+            .on('attr.lockState', (lockState) => {
+                this.log('Lock state changed to:', lockState);
+            });
+
+        zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
             .on('attr.batteryVoltage', (batteryVoltage) => {
                 // handle reported attribute value
                 this.log('attr.batteryVoltage', batteryVoltage);
             });
 
-        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+        zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
             .on('attr.batteryPercentageRemaining', (soundVolume) => {
                 // handle reported attribute value
                 this.log('attr.batteryPercentageRemaining', soundVolume);
