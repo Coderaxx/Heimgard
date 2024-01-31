@@ -68,7 +68,6 @@
       "capabilities": [
         "measure_battery",
         "alarm_battery",
-        "measure_voltage",
         "locked"
       ],
       "platforms": [
@@ -100,7 +99,6 @@
               4,
               5,
               32,
-              25,
               257
             ]
           }

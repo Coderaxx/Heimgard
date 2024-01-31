@@ -2,32 +2,28 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
+const HeimgardDoorLockBoundCluster = require('../../lib/HeimgardDoorLockBoundCluster');
 
-// Enable debug logging of all relevant Zigbee communication
-debug(true);
+//debug(true);
 
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
 class HTSLM2 extends ZigBeeDevice {
-
     async onNodeInit({ zclNode }) {
-        this.log('HT-SLM-2 Node has been initialized');
-
-        this.enableDebug();
+        this.settings = await this.getSettings();
+        //this.enableDebug();
         //this.printNode();
 
         this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
             setParser(setValue) {
-                this.log('setParser', setValue);
                 if (setValue === 'lockDoor') return true;
                 return false;
             },
             get: 'lockState',
             report: 'lockState',
             reportParser(report) {
-                this.log('reportParser', report);
                 if (report && report === 'locked') return true;
                 return false;
             },
@@ -35,29 +31,6 @@ class HTSLM2 extends ZigBeeDevice {
                 configureAttributeReporting: {
                     minInterval: 0,
                     maxInterval: 60 * 1000,
-                    minChange: 1,
-                },
-            },
-            endpoint: 1, // Default is 1
-            getOpts: {
-                getOnStart: true,
-                getOnOnline: true,
-                pollInterval: 60 * 60 * 1000,
-            },
-        });
-
-        this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
-            get: 'batteryVoltage',
-            report: 'batteryVoltage',
-            reportParser(report) {
-                if (report) {
-                    return report / 10;
-                }
-            },
-            reportOpts: {
-                configureAttributeReporting: {
-                    minInterval: 0,
-                    maxInterval: 10800,
                     minChange: 1,
                 },
             },
@@ -87,8 +60,14 @@ class HTSLM2 extends ZigBeeDevice {
             },
         });
 
-        this.batteryThreshold = 20;
+        this.batteryThreshold = this.settings.batteryThreshold || 20;
         this.registerCapability('alarm_battery', CLUSTER.POWER_CONFIGURATION, {
+            get: 'batteryPercentageRemaining',
+            report: 'batteryPercentageRemaining',
+            reportParser(report) {
+                if (report && report < this.batteryThreshold) return true;
+                return false;
+            },
             reportOpts: {
                 configureAttributeReporting: {
                     minInterval: 0,
@@ -104,40 +83,35 @@ class HTSLM2 extends ZigBeeDevice {
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
             .on('attr.lockState', (lockState) => {
-                this.log('Lock state changed to:', lockState);
+                this.homey.app.log('Lock state changed to:', 'HT-SLM-2', 'DEBUG', lockState);
             });
 
-        zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
-            .on('attr.batteryVoltage', (batteryVoltage) => {
-                // handle reported attribute value
-                this.log('attr.batteryVoltage', batteryVoltage);
+        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
+            .on('command.OperatingEventNotification', (OperatingEventNotification) => {
+                this.homey.app.log('OperatingEventNotification:', 'HT-SLM-2', 'DEBUG', OperatingEventNotification);
             });
 
-        zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
-            .on('attr.batteryPercentageRemaining', (batteryPercentageRemaining) => {
-                // handle reported attribute value
-                this.log('attr.batteryPercentageRemaining', batteryPercentageRemaining);
-            });
+            this.homey.app.log('HT-SLM-2 Node has been initialized');
     }
 
-    async onEndDeviceAnnounce() {
-        this.log('HT-SLM-2 has been discovered');
+    _operationEventNotificationCommandHandler({ operationEventSource, operationEventCode, userID, pinCode, localTime, data }) {
+        this.homey.app.log('Operation event notification', 'HT-SLM-2', 'DEBUG', { operationEventSource, operationEventCode, userID, pinCode, localTime, data });
     }
 
     async onAdded() {
-        this.log('HT-SLM-2 has been added');
+        this.homey.app.log('HT-SLM-2 has been added', 'HT-SLM-2');
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        this.log('HT-SLM-2 settings were changed');
+        this.homey.app.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
     }
 
     async onRenamed(name) {
-        this.log('HT-SLM-2 was renamed');
+        this.homey.app.log('HT-SLM-2 was renamed', 'HT-SLM-2');
     }
 
     async onDeleted() {
-        this.log('HT-SLM-2 has been deleted');
+        this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
 }
