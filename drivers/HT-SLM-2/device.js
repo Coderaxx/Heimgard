@@ -15,17 +15,7 @@ class HTSLM2 extends ZigBeeDevice {
         this.log('HT-SLM-2 Node has been initialized');
 
         this.enableDebug();
-        this.printNode();
-
-        //this.log('discoverAttributesExtended', await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
-        //this.log('readReportingConfiguration', await zclNode.endpoints[1].clusters.doorLock.readReportingConfiguration(["lockState", "lockType", "actuatorEnabled", "doorState", "doorOpenEvents", "doorClosedEvents"]));
-        const currentLockState = await zclNode.endpoints[1].clusters.doorLock.readAttributes(
-            ["lockState", "lockType", "doorState", "enableLocalProgramming"],
-        ).catch(err => { this.error(err); });
-        this.log('Door Lock State: ' + JSON.stringify(currentLockState, null, 2));
-
-        this.log('discoverCommandsGenerated', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
-        this.log('discoverCommandsReceived', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
+        //this.printNode();
 
         this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
@@ -43,8 +33,8 @@ class HTSLM2 extends ZigBeeDevice {
             },
             reportOpts: {
                 configureAttributeReporting: {
-                    minInterval: 0, // Minimally once every hour
-                    maxInterval: 60 * 1000, // Maximally once every ~16 hours
+                    minInterval: 0,
+                    maxInterval: 60 * 1000,
                     minChange: 1,
                 },
             },
@@ -52,7 +42,63 @@ class HTSLM2 extends ZigBeeDevice {
             getOpts: {
                 getOnStart: true,
                 getOnOnline: true,
-                pollInterval: 60 * 60 * 1000, // in ms
+                pollInterval: 60 * 60 * 1000,
+            },
+        });
+
+        this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
+            get: 'batteryVoltage',
+            report: 'batteryVoltage',
+            reportParser(report) {
+                if (report) {
+                    return report / 10;
+                }
+            },
+            reportOpts: {
+                configureAttributeReporting: {
+                    minInterval: 0,
+                    maxInterval: 10800,
+                    minChange: 1,
+                },
+            },
+            endpoint: 1,
+            getOpts: {
+                getOnStart: true,
+                getOnOnline: true,
+                pollInterval: 60 * 60 * 1000,
+            },
+        });
+
+        this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
+            get: 'batteryPercentageRemaining',
+            report: 'batteryPercentageRemaining',
+            reportOpts: {
+                configureAttributeReporting: {
+                    minInterval: 0,
+                    maxInterval: 10800,
+                    minChange: 1,
+                },
+            },
+            endpoint: 1,
+            getOpts: {
+                getOnStart: true,
+                getOnOnline: true,
+                pollInterval: 60 * 60 * 1000,
+            },
+        });
+
+        this.batteryThreshold = 20;
+        this.registerCapability('alarm_battery', CLUSTER.POWER_CONFIGURATION, {
+            reportOpts: {
+                configureAttributeReporting: {
+                    minInterval: 0,
+                    maxInterval: 10800,
+                    minChange: 1,
+                },
+            },
+            getOpts: {
+                getOnStart: true,
+                getOnOnline: true,
             },
         });
 
@@ -72,47 +118,6 @@ class HTSLM2 extends ZigBeeDevice {
                 // handle reported attribute value
                 this.log('attr.batteryPercentageRemaining', batteryPercentageRemaining);
             });
-
-        this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
-            get: 'batteryVoltage',
-            report: 'batteryVoltage',
-            reportParser(report) {
-                if (report) {
-                    return report / 10;
-                }
-            },
-            reportOpts: {
-                configureAttributeReporting: {
-                    minInterval: 0, // Minimally once every hour
-                    maxInterval: 10800, // Maximally once every ~16 hours
-                    minChange: 1,
-                },
-            },
-            endpoint: 1, // Default is 1
-            getOpts: {
-                getOnStart: true,
-                getOnOnline: true,
-                pollInterval: 60 * 60 * 1000, // in ms
-            },
-        });
-
-        this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
-            get: 'batteryPercentageRemaining',
-            report: 'batteryPercentageRemaining',
-            reportOpts: {
-                configureAttributeReporting: {
-                    minInterval: 0, // Minimally once every hour
-                    maxInterval: 10800, // Maximally once every ~16 hours
-                    minChange: 1,
-                },
-            },
-            endpoint: 1, // Default is 1
-            getOpts: {
-                getOnStart: true,
-                getOnOnline: true,
-                pollInterval: 60 * 60 * 1000, // in ms
-            },
-        });
     }
 
     async onEndDeviceAnnounce() {
