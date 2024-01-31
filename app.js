@@ -10,11 +10,11 @@ class Heimgard extends Homey.App {
     async log(message, instance = 'Heimgard App', severity = 'DEBUG', data = null) {
         const now = new Date();
 
-        let datestring = now.toLocaleDateString(this.userLanguage, {
+        let datestring = now.toLocaleDateString('nb-NO', {
             dateStyle: 'short',
             timeZone: 'Europe/Oslo'
         });
-        let timestring = now.toLocaleTimeString(this.userLanguage, {
+        let timestring = now.toLocaleTimeString('nb-NO', {
             timeStyle: 'medium',
             timeZone: 'Europe/Oslo'
         });

@@ -2,7 +2,6 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
-const LockControlBoundCluster = require('../../lib/LockControlBoundCluster');
 
 // Enable debug logging of all relevant Zigbee communication
 debug(true);
@@ -18,17 +17,17 @@ class HTSLM2 extends ZigBeeDevice {
         this.enableDebug();
         this.printNode();
 
-        this.log('discoverAttributesExtended', await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
+        //this.log('discoverAttributesExtended', await zclNode.endpoints[1].clusters.doorLock.discoverAttributesExtended());
         //this.log('readReportingConfiguration', await zclNode.endpoints[1].clusters.doorLock.readReportingConfiguration(["lockState", "lockType", "actuatorEnabled", "doorState", "doorOpenEvents", "doorClosedEvents"]));
         const currentLockState = await zclNode.endpoints[1].clusters.doorLock.readAttributes(
-            ["lockState", "lockType", "doorState", "soundVolume", "language", "enableLocalProgramming"],
+            ["lockState", "lockType", "doorState", "enableLocalProgramming"],
         ).catch(err => { this.error(err); });
         this.log('Door Lock State: ' + JSON.stringify(currentLockState, null, 2));
 
-        //this.log('discoverCommandsGenerated', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
-        //this.log('discoverCommandsReceived', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
+        this.log('discoverCommandsGenerated', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsGenerated());
+        this.log('discoverCommandsReceived', await zclNode.endpoints[1].clusters.doorLock.discoverCommandsReceived());
 
-        /*this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
+        this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
             setParser(setValue) {
                 this.log('setParser', setValue);
@@ -45,51 +44,17 @@ class HTSLM2 extends ZigBeeDevice {
             reportOpts: {
                 configureAttributeReporting: {
                     minInterval: 0, // Minimally once every hour
-                    maxInterval: 60 * 60 * 1000, // Maximally once every ~16 hours
-                    minChange: 0,
+                    maxInterval: 60 * 1000, // Maximally once every ~16 hours
+                    minChange: 1,
                 },
             },
             endpoint: 1, // Default is 1
             getOpts: {
                 getOnStart: true,
                 getOnOnline: true,
-                pollInterval: 1000 * 1000, // in ms
+                pollInterval: 60 * 60 * 1000, // in ms
             },
-        });*/
-
-        if (this.isFirstInit()) {
-            await this.configureAttributeReporting([{
-                endpointId: 1,
-                cluster: CLUSTER.DOOR_LOCK,
-                attributeName: 'lockState',
-                minInterval: 0,
-                maxInterval: 60,
-                minChange: 1,
-            }]);
-
-            await this.configureAttributeReporting([{
-                endpointId: 1,
-                cluster: CLUSTER.DOOR_LOCK,
-                attributeName: 'soundVolume',
-                minInterval: 0,
-                maxInterval: 60,
-                minChange: 1,
-            }]);
-
-            await this.configureAttributeReporting([{
-                endpointId: 1,
-                cluster: CLUSTER.POWER_CONFIGURATION,
-                attributeName: 'batteryVoltage',
-                minInterval: 0,
-                maxInterval: 60,
-                minChange: 1,
-            }]);
-        }
-
-        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
-            .on('attr.lockState', lockState => {
-                this.log('Lock state changed to:', lockState);
-            });
+        });
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
             .on('attr.lockState', (lockState) => {
@@ -103,12 +68,12 @@ class HTSLM2 extends ZigBeeDevice {
             });
 
         zclNode.endpoints[1].clusters[CLUSTER.POWER_CONFIGURATION.NAME]
-            .on('attr.batteryPercentageRemaining', (soundVolume) => {
+            .on('attr.batteryPercentageRemaining', (batteryPercentageRemaining) => {
                 // handle reported attribute value
-                this.log('attr.batteryPercentageRemaining', soundVolume);
+                this.log('attr.batteryPercentageRemaining', batteryPercentageRemaining);
             });
 
-        /*this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
+        this.registerCapability('measure_voltage', CLUSTER.POWER_CONFIGURATION, {
             get: 'batteryVoltage',
             report: 'batteryVoltage',
             reportParser(report) {
@@ -119,7 +84,7 @@ class HTSLM2 extends ZigBeeDevice {
             reportOpts: {
                 configureAttributeReporting: {
                     minInterval: 0, // Minimally once every hour
-                    maxInterval: 10800 * 1000, // Maximally once every ~16 hours
+                    maxInterval: 10800, // Maximally once every ~16 hours
                     minChange: 1,
                 },
             },
@@ -127,28 +92,9 @@ class HTSLM2 extends ZigBeeDevice {
             getOpts: {
                 getOnStart: true,
                 getOnOnline: true,
-                pollInterval: 30 * 1000, // in ms
+                pollInterval: 60 * 60 * 1000, // in ms
             },
         });
-
-        if (this.hasCapability('alarm_battery')) {
-            // Set battery threshold under which the alarm should go off
-            this.batteryThreshold = 20;
-
-            // Register measure_battery capability and configure attribute reporting
-            this.registerCapability('alarm_battery', CLUSTER.POWER_CONFIGURATION, {
-                getOpts: {
-                    getOnStart: true,
-                },
-                reportOpts: {
-                    configureAttributeReporting: {
-                        minInterval: 0, // No minimum reporting interval
-                        maxInterval: 10800 * 1000, // Maximally every ~16 hours
-                        minChange: 5, // Report when value changed by 5
-                    },
-                },
-            });
-        }
 
         this.registerCapability('measure_battery', CLUSTER.POWER_CONFIGURATION, {
             get: 'batteryPercentageRemaining',
@@ -156,7 +102,7 @@ class HTSLM2 extends ZigBeeDevice {
             reportOpts: {
                 configureAttributeReporting: {
                     minInterval: 0, // Minimally once every hour
-                    maxInterval: 10800 * 1000, // Maximally once every ~16 hours
+                    maxInterval: 10800, // Maximally once every ~16 hours
                     minChange: 1,
                 },
             },
@@ -164,9 +110,9 @@ class HTSLM2 extends ZigBeeDevice {
             getOpts: {
                 getOnStart: true,
                 getOnOnline: true,
-                pollInterval: 30 * 1000, // in ms
+                pollInterval: 60 * 60 * 1000, // in ms
             },
-        });*/
+        });
     }
 
     async onEndDeviceAnnounce() {
