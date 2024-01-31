@@ -76,6 +76,7 @@
       "connectivity": [
         "zigbee"
       ],
+      "icon": "/drivers/HT-SLM-2/assets/icon.svg",
       "zigbee": {
         "manufacturerName": "Heimgard Technologies",
         "productId": [

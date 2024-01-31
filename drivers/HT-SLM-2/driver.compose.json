@@ -15,6 +15,7 @@
     "connectivity": [
         "zigbee"
     ],
+    "icon": "{{driverAssetsPath}}/icon.svg",
     "zigbee": {
         "manufacturerName": "Heimgard Technologies",
         "productId": [
