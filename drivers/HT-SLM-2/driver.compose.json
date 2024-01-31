@@ -43,9 +43,10 @@
             }
         },
         "learnmode": {
+            "image": "/drivers/HT-SLM-2/assets/learnmode.svg",
             "instruction": {
-                "en": "Press the button on your device three times",
-                "no": "Trykk på knappen på enheten din tre ganger"
+                "en": "1. Press and hold the function button [3 seconds]\r\n2. Enter [main PIN] [*]\r\n3. Press [1] [*]\r\n4. Press [1] [*]\r\n5. The panel will blink green to confirm that the inclusion was successful",
+                "no": "1. Trykk og hold inne funksjonsknappen [3 sek]\r\n2. Skriv inn [hoved-PIN] [*]\r\n3. Trykk på [1] [*]\r\n4. Trykk på [1] [*]\r\n5. Panelet blinker grønt for å bekrefte at inkluderingen er vellykket"
             }
         }
     },
