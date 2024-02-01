@@ -1,75 +1,80 @@
 {
-    "name": {
-        "en": "Heimgard Smart Electronic Door Lock",
-        "no": "Heimgard Smart Elektronisk Dørlås"
-    },
-    "class": "lock",
-    "capabilities": [
-        "measure_battery",
-        "alarm_battery",
-        "locked"
+  "name": {
+    "en": "Heimgard Smart Electronic Door Lock",
+    "no": "Heimgard Smart Elektronisk Dørlås"
+  },
+  "class": "lock",
+  "capabilities": [
+    "measure_battery",
+    "alarm_battery",
+    "locked"
+  ],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "zigbee"
+  ],
+  "icon": "{{driverAssetsPath}}/icon.svg",
+  "zigbee": {
+    "manufacturerName": "Heimgard Technologies AS",
+    "productId": [
+      "HT-SLM-2"
     ],
-    "platforms": [
-        "local"
-    ],
-    "connectivity": [
-        "zigbee"
-    ],
-    "icon": "{{driverAssetsPath}}/icon.svg",
-    "zigbee": {
-        "manufacturerName": "Heimgard Technologies",
-        "productId": [
-            "HT-SLM-2"
+    "endpoints": {
+      "1": {
+        "clusters": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          32,
+          257
         ],
-        "endpoints": {
-            "1": {
-                "clusters": [
-                    0,
-                    1,
-                    3,
-                    4,
-                    5,
-                    32,
-                    257
-                ],
-                "bindings": [
-                    0,
-                    1,
-                    3,
-                    4,
-                    5,
-                    32,
-                    257
-                ]
-            }
-        },
-        "learnmode": {
-            "image": "/drivers/HT-SLM-2/assets/learnmode.svg",
-            "instruction": {
-                "en": "1. Press and hold the function button [3 seconds]\r\n2. Enter [main PIN] [*]\r\n3. Press [1] [*]\r\n4. Press [1] [*]\r\n5. The panel will blink green to confirm that the inclusion was successful",
-                "no": "1. Trykk og hold inne funksjonsknappen [3 sek]\r\n2. Skriv inn [hoved-PIN] [*]\r\n3. Trykk på [1] [*]\r\n4. Trykk på [1] [*]\r\n5. Panelet blinker grønt for å bekrefte at inkluderingen er vellykket"
-            }
-        }
+        "bindings": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          32,
+          257
+        ]
+      }
     },
-    "pair": [
-        {
-            "id": "list_devices",
-            "template": "list_devices",
-            "navigation": {
-                "next": "add_devices"
-            },
-            "options": {
-                "singular": true
-            }
-        },
-        {
-            "id": "add_devices",
-            "template": "add_devices"
-        }
-    ],
-    "images": {
-        "small": "{{driverAssetsPath}}/images/small.png",
-        "large": "{{driverAssetsPath}}/images/large.png",
-        "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    "learnmode": {
+      "image": "/drivers/HT-SLM-2/assets/learnmode.svg",
+      "instruction": {
+        "en": "1. Press and hold the function button [3 seconds]\r\n2. Enter [main PIN] [*]\r\n3. Press [1] [*]\r\n4. Press [1] [*]\r\n5. The panel will blink green to confirm that the inclusion was successful",
+        "no": "1. Trykk og hold inne funksjonsknappen [3 sek]\r\n2. Skriv inn [hoved-PIN] [*]\r\n3. Trykk på [1] [*]\r\n4. Trykk på [1] [*]\r\n5. Panelet blinker grønt for å bekrefte at inkluderingen er vellykket"
+      }
     }
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": true
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "energy": {
+    "batteries": [
+      "AA"
+    ]
+  }
 }
