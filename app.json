@@ -61,8 +61,8 @@
   "drivers": [
     {
       "name": {
-        "en": "Heimgard Smart Electronic Door Lock",
-        "no": "Heimgard Smart Elektronisk Dørlås"
+        "en": "Heimgard HT-SLM-2",
+        "no": "Heimgard HT-SLM-2"
       },
       "class": "lock",
       "capabilities": [
@@ -145,7 +145,7 @@
           "type": "number",
           "label": {
             "en": "Low Battery Alarm Threshold (%)",
-            "no": "Lavt batteri alarm threshold (%)"
+            "no": "Lavt batteri alarm terskel (%)"
           },
           "hint": {
             "en": "This setting determines the threshold before a battery alarm is given.",

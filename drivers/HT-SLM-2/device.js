@@ -15,6 +15,8 @@ class HTSLM2 extends ZigBeeDevice {
         //this.enableDebug();
         //this.printNode();
 
+        //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsGenerated());
+
         this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
             setParser(setValue) {
@@ -91,11 +93,13 @@ class HTSLM2 extends ZigBeeDevice {
                 this.homey.app.log('OperatingEventNotification:', 'HT-SLM-2', 'DEBUG', OperatingEventNotification);
             });
 
-            this.homey.app.log('HT-SLM-2 Node has been initialized');
+        this.homey.app.log('HT-SLM-2 Node has been initialized');
     }
 
-    _operationEventNotificationCommandHandler({ operationEventSource, operationEventCode, userID, pinCode, localTime, data }) {
-        this.homey.app.log('Operation event notification', 'HT-SLM-2', 'DEBUG', { operationEventSource, operationEventCode, userID, pinCode, localTime, data });
+    pinRfidCodeFormat(code) {
+        const asciiEncoded = [...code].map(c => c.charCodeAt(0).toString(16)).join('');
+        const lengthPrefix = Buffer.from([code.length]).toString('hex');
+        return lengthPrefix + asciiEncoded;
     }
 
     async onAdded() {
