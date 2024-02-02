@@ -18,6 +18,15 @@ class HTSLM2 extends ZigBeeDevice {
 
         //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsGenerated());
 
+        zclNode.endpoints[1].bind(
+            CLUSTER.DOOR_LOCK.NAME,
+            new HeimgardSpecificBoundCluster({
+                onOperatingEventNotification: (payload) => {
+                    this.log('OperatingEventNotification:', 'HT-SLM-2', 'DEBUG', payload);
+                },
+            })
+        );
+
         this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
             setParser(setValue) {
