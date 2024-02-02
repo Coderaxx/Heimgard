@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+		<style type="text/css">
+			.tg {
+				border-collapse: collapse;
+				border-color: #ccc;
+				border-spacing: 0;
+				margin: 0px auto;
+			}
+
+			.tg td {
+				background-color: #fff;
+				border-color: #ccc;
+				border-style: solid;
+				border-width: 1px;
+				color: #333;
+				font-family: Arial, sans-serif;
+				font-size: 14px;
+				overflow: hidden;
+				padding: 10px 5px;
+				word-break: normal;
+			}
+
+			.tg th {
+				background-color: #f0f0f0;
+				border-color: #ccc;
+				border-style: solid;
+				border-width: 1px;
+				color: #333;
+				font-family: Arial, sans-serif;
+				font-size: 14px;
+				font-weight: normal;
+				overflow: hidden;
+				padding: 10px 5px;
+				word-break: normal;
+			}
+
+			.tg .tg-baqh {
+				text-align: center;
+				vertical-align: top
+			}
+
+			.tg .tg-rz9m {
+				position: -webkit-sticky;
+				position: sticky;
+				text-align: center;
+				top: -1px;
+				vertical-align: top;
+				will-change: transform
+			}
+
+			.tg .tg-0lax {
+				text-align: left;
+				vertical-align: top
+			}
+
+			@media screen and (max-width: 767px) {
+				.tg {
+					width: auto !important;
+				}
+
+				.tg col {
+					width: auto !important;
+				}
+
+				.tg-wrap {
+					overflow-x: auto;
+					-webkit-overflow-scrolling: touch;
+					margin: auto 0px;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="homey-header">
+			<h1 class="homey-title" data-i18n="Heimgard.settings.title">
+				Logs
+			</h1>
+		</header>
+
+		<div class="tg-wrap">
+			<table class="tg">
+				<thead>
+					<tr>
+						<th class="tg-0lax" style="text-align:center">
+							<b>
+								Timestamp
+							</b>
+						</th>
+						<th class="tg-0lax" style="text-align:center">
+							<b>
+								Severity
+							</b>
+						</th>
+						<th class="tg-0lax" style="text-align:center" width="60%">
+							<b>
+								Message
+							</b>
+						</th>
+					</tr>
+				</thead>
+				<tbody id="logs"></tbody>
+			</table>
+		</div>
+	</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script type="text/javascript">
+		function onHomeyReady(Homey) {
+			Homey.ready();
+			console.log('[\x1b[36mDEBUG\x1b[0m]', 'Homey is ready!')
+
+			function addLogEntry(registered, severity, message, data) {
+				var msg;
+				if (data == null) {
+					msg = $('<b>').text(message);
+				} else {
+					msg = $('<b>').text(message).add($('<br>')).add($('<code>').text(JSON.stringify(data, ' ', 1)));
+				}
+
+				switch (severity) {
+					case 'DEBUG':
+						severity = `<span style="color:blue"><b>${severity}</b></span>`;
+						break;
+					case 'WARNING':
+						severity = `<span style="color:orange"><b>${severity}</b></span>`;
+						break;
+					case 'ERROR':
+						severity = `<span style="color:red"><b>${severity}</b></span>`;
+						break;
+					default:
+						severity = `<span style="color:blue"><b>${severity}</b></span>`;
+						break;
+				}
+				var html = $('<tr>').addClass('event').append($('<td style="text-align:center">').text(registered)).append($('<td style="text-align:center">').html(severity)).append($('<td>').append(msg));
+				$('#logs').prepend(html);
+			}
+
+			Homey.get('debugLog', function(error, value) {
+				if (error) {
+					return console.error(error);
+				}
+				if (value != null) {
+					value.forEach(function(item) {
+						addLogEntry(item.registered, item.severity, item.message, item.data);
+					});
+				}
+			});
+
+			Homey.on('debugLog', function(item) {
+				addLogEntry(item.registered, item.severity, item.message, item.data);
+			});
+		}
+	</script>
+
+</html>

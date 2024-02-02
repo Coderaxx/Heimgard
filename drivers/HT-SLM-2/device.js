@@ -11,6 +11,7 @@ Cluster.addCluster(HeimgardDoorLockCluster);
 
 class HTSLM2 extends ZigBeeDevice {
     async onNodeInit({ zclNode }) {
+        this.log = this.log.bind(this);
         this.settings = await this.getSettings();
         //this.enableDebug();
         //this.printNode();
@@ -85,15 +86,15 @@ class HTSLM2 extends ZigBeeDevice {
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
             .on('attr.lockState', (lockState) => {
-                this.homey.app.log('Lock state changed to:', 'HT-SLM-2', 'DEBUG', lockState);
+                this.log('Lock state changed to:', 'HT-SLM-2', 'DEBUG', lockState);
             });
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
             .on('command.OperatingEventNotification', (OperatingEventNotification) => {
-                this.homey.app.log('OperatingEventNotification:', 'HT-SLM-2', 'DEBUG', OperatingEventNotification);
+                this.log('OperatingEventNotification:', 'HT-SLM-2', 'DEBUG', OperatingEventNotification);
             });
 
-        this.homey.app.log('HT-SLM-2 Node has been initialized');
+        this.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
     }
 
     pinRfidCodeFormat(code) {
@@ -103,19 +104,19 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async onAdded() {
-        this.homey.app.log('HT-SLM-2 has been added', 'HT-SLM-2');
+        this.log('HT-SLM-2 has been added', 'HT-SLM-2');
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        this.homey.app.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
+        this.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
     }
 
     async onRenamed(name) {
-        this.homey.app.log('HT-SLM-2 was renamed', 'HT-SLM-2');
+        this.log('HT-SLM-2 was renamed', 'HT-SLM-2');
     }
 
     async onDeleted() {
-        this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
+        this.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
 }

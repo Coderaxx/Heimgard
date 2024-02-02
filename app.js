@@ -7,7 +7,7 @@ class Heimgard extends Homey.App {
         this.log('Heimgard has been initialized');
     }
 
-    async log(message, instance = 'Heimgard App', severity = 'DEBUG', data = null) {
+    async log(message, instance = 'Heimgard', severity = 'DEBUG', data = null) {
         const now = new Date();
 
         let datestring = now.toLocaleDateString('nb-NO', {
@@ -60,6 +60,8 @@ class Heimgard extends Homey.App {
         if (debugLog.length > 100) {
             debugLog.splice(0, 1);
         }
+        this.homey.settings.set('debugLog', debugLog);
+        this.homey.api.realtime('debugLog', entry);
     }
 
 }
