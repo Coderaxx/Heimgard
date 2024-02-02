@@ -3,20 +3,25 @@
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
 const HeimgardSpecificBoundCluster = require('../../lib/HeimgardSpecificBoundCluster');
-
-//debug(true);
-
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
+debug(true);
+
 class HTSLM2 extends ZigBeeDevice {
     async onNodeInit({ zclNode }) {
-        this.log = this.log.bind(this);
         this.settings = await this.getSettings();
-        //this.enableDebug();
+        this.enableDebug();
         //this.printNode();
 
         //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsGenerated());
+        //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverAttributesExtended());
+        /*await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].setPinCode({
+            userID: 5,
+            userStatus: 1,
+            userType: 0,
+            pinCode: Buffer.from('0589'),
+        }).catch(e => this.homey.app.log(e, 'HT-SLM-2', 'ERROR'));*/
 
         this.registerCapability('locked', CLUSTER.DOOR_LOCK, {
             set: value => (value ? 'lockDoor' : 'unlockDoor'),
@@ -86,10 +91,10 @@ class HTSLM2 extends ZigBeeDevice {
 
         zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
             .on('attr.lockState', (lockState) => {
-                this.log('Lock state changed to:', 'HT-SLM-2', 'DEBUG', lockState);
+                this.homey.app.log('Lock state changed:', 'HT-SLM-2', 'DEBUG', lockState);
             });
 
-        this.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
     }
 
     pinRfidCodeFormat(code) {
@@ -99,19 +104,19 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async onAdded() {
-        this.log('HT-SLM-2 has been added', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 has been added', 'HT-SLM-2');
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        this.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
     }
 
     async onRenamed(name) {
-        this.log('HT-SLM-2 was renamed', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 was renamed', 'HT-SLM-2');
     }
 
     async onDeleted() {
-        this.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
 }
