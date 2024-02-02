@@ -17,7 +17,7 @@
   ],
   "icon": "{{driverAssetsPath}}/icon.svg",
   "zigbee": {
-    "manufacturerName": "Heimgard Technologies AS",
+    "manufacturerName": "Heimgard Technologies",
     "productId": [
       "HT-SLM-2"
     ],
