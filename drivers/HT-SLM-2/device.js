@@ -91,11 +91,11 @@ class HTSLM2 extends ZigBeeDevice {
         });
 
         zclNode.endpoints[1].clusters.doorLock.on('attr.lockState', this.onReport.bind(this));
-        zclNode.endpoints[1].clusters.doorLock.on('onOperatingEventNotification', this.onReport.bind(this));
+        zclNode.endpoints[1].clusters.doorLock.on('event.operatingEventNotification', this.onReport.bind(this));
 
-        this.zclNode.endpoints[1].bind(CLUSTER.DOOR_LOCK.NAME,
+        this.zclNode.endpoints[1].bind('doorLock',
             new DoorLockBoundCluster({
-                onOperatingEventNotification: this._onOperatingEventNotificationCommandHandler.bind(this),
+                onOperatingEventNotification: this.onReport.bind(this),
             }));
 
         this.homey.app.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
