@@ -90,16 +90,12 @@
               3,
               4,
               5,
-              32,
               257
             ],
             "bindings": [
               0,
               1,
               3,
-              4,
-              5,
-              32,
               257
             ]
           }
@@ -140,6 +136,38 @@
       },
       "id": "HT-SLM-2",
       "settings": [
+        {
+          "id": "soundVolume",
+          "type": "dropdown",
+          "value": "high",
+          "label": {
+            "en": "Sound Volume",
+            "no": "Volum"
+          },
+          "values": [
+            {
+              "id": "high",
+              "label": {
+                "en": "High (default)",
+                "no": "Høy (standard)"
+              }
+            },
+            {
+              "id": "low",
+              "label": {
+                "en": "Low",
+                "no": "Lav"
+              }
+            },
+            {
+              "id": "off",
+              "label": {
+                "en": "Off",
+                "no": "Av"
+              }
+            }
+          ]
+        },
         {
           "id": "batteryThreshold",
           "type": "number",

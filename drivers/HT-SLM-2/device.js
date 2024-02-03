@@ -2,19 +2,20 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
-const HeimgardSpecificBoundCluster = require('../../lib/HeimgardSpecificBoundCluster');
+const DoorLockBoundCluster = require('../../lib/DoorLockBoundCluster');
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
-debug(true);
+//debug(true);
 
 class HTSLM2 extends ZigBeeDevice {
     async onNodeInit({ zclNode }) {
         this.settings = await this.getSettings();
-        this.enableDebug();
+        //this.enableDebug();
         //this.printNode();
 
         //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsGenerated());
+        //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsReceived());
         //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverAttributesExtended());
         /*await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].setPinCode({
             userID: 5,
@@ -89,18 +90,15 @@ class HTSLM2 extends ZigBeeDevice {
             },
         });
 
-        zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME]
-            .on('attr.lockState', (lockState) => {
-                this.homey.app.log('Lock state changed:', 'HT-SLM-2', 'DEBUG', lockState);
-            });
+        zclNode.endpoints[1].clusters.doorLock.on('attr.lockState', this.onReport.bind(this));
+        zclNode.endpoints[1].clusters.doorLock.on('onOperatingEventNotification', this.onReport.bind(this));
+
+        this.zclNode.endpoints[1].bind(CLUSTER.DOOR_LOCK.NAME,
+            new DoorLockBoundCluster({
+                onOperatingEventNotification: this._onOperatingEventNotificationCommandHandler.bind(this),
+            }));
 
         this.homey.app.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
-    }
-
-    pinRfidCodeFormat(code) {
-        const asciiEncoded = [...code].map(c => c.charCodeAt(0).toString(16)).join('');
-        const lengthPrefix = Buffer.from([code.length]).toString('hex');
-        return lengthPrefix + asciiEncoded;
     }
 
     async onAdded() {
@@ -108,15 +106,45 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
+        if (changedKeys.includes('batteryThreshold')) {
+            this.batteryThreshold = newSettings.batteryThreshold;
+        } else if (changedKeys.includes('soundVolume')) {
+            let soundVolume;
+            switch (newSettings.soundVolume) {
+                case 'off':
+                    soundVolume = 0x00;
+                    break;
+                case 'low':
+                    soundVolume = 0x01;
+                    break;
+                case 'high':
+                    soundVolume = 0x02;
+                    break;
+                default:
+                    break;
+            }
+            await this.zclNode.endpoints[1].clusters.doorLock.writeAttributes({ soundVolume: soundVolume }).then(() => {
+                this.homey.app.log('Sound volume has been changed from ' + oldSettings.soundVolume + ' to ' + newSettings.soundVolume, 'HT-SLM-2');
+            }).catch(e => this.homey.app.log(e, 'HT-SLM-2', 'ERROR'));
+        }
+
         this.homey.app.log('HT-SLM-2 settings were changed', 'HT-SLM-2');
     }
 
     async onRenamed(name) {
-        this.homey.app.log('HT-SLM-2 was renamed', 'HT-SLM-2');
+        this.homey.app.log('HT-SLM-2 was renamed to ' + name, 'HT-SLM-2');
     }
 
     async onDeleted() {
         this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
+    }
+
+    _onOperatingEventNotificationCommandHandler(payload) {
+        this.homey.app.log('Operating event notification:', 'HT-SLM-2', 'DEBUG', payload);
+    }
+
+    onReport(data) {
+        this.homey.app.log('Received a response or report:', 'HT-SLM-2', 'DEBUG', data);
     }
 
 }

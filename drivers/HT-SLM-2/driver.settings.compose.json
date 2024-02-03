@@ -1,5 +1,37 @@
 [
     {
+        "id": "soundVolume",
+        "type": "dropdown",
+        "value": "high",
+        "label": {
+            "en": "Sound Volume",
+            "no": "Volum"
+        },
+        "values": [
+            {
+                "id": "high",
+                "label": {
+                    "en": "High (default)",
+                    "no": "Høy (standard)"
+                }
+            },
+            {
+                "id": "low",
+                "label": {
+                    "en": "Low",
+                    "no": "Lav"
+                }
+            },
+            {
+                "id": "off",
+                "label": {
+                    "en": "Off",
+                    "no": "Av"
+                }
+            }
+        ]
+    },
+    {
         "id": "batteryThreshold",
         "type": "number",
         "label": {
