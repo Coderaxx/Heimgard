@@ -101,11 +101,11 @@ class HTSLM2 extends ZigBeeDevice {
         setUserPIn.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.setPinCode({
                 userID: args.userID,
-                userStatus: args.userStatus,
-                userType: args.userType,
+                userStatus: 0x01,
+                userType: 0x00,
                 pinCode: Buffer.from(`${args.pinCode}`),
             }).then(() => {
-                this.homey.app.log(`Added a new user with ID ${args.userID} and PIN ${args.pinCode}. (UserType: ${args.userType} | UserStatus: ${args.userStatus})`, 'HT-SLM-2');
+                this.homey.app.log(`Added a new user with ID ${args.userID} and PIN ${args.pinCode}.`, 'HT-SLM-2');
             }).catch(e => this.homey.app.log('Failed to add a new user:', 'HT-SLM-2', 'ERROR', e));
         });
 
@@ -159,6 +159,7 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async _onProgrammingEventNotification(payload) {
+        payload = await convertUint8ToString(payload);
         this.homey.app.log('Received a programming event notification:', 'HT-SLM-2', 'DEBUG', payload);
     }
 

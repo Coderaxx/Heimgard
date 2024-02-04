@@ -67,8 +67,8 @@
           "no": "Sett bruker-PIN"
         },
         "titleFormatted": {
-          "en": "Create a new PIN for ID [[userID]] with code [[pinCode]] and set user status to [[userStatus]] and type to [[userType]]",
-          "no": "Opprett en ny PIN for ID [[userID]] med kode [[pinCode]] og sett brukerstatus til [[userStatus]] og brukertype til [[userType]]"
+          "en": "Create a new PIN for ID [[userID]] with code [[pinCode]]",
+          "no": "Opprett en ny PIN for ID [[userID]] med kode [[pinCode]]"
         },
         "hint": {
           "en": "Adds a PIN code to the user slot provided",
@@ -91,75 +91,6 @@
             "min": 3,
             "max": 40,
             "step": 1
-          },
-          {
-            "type": "dropdown",
-            "name": "userStatus",
-            "title": {
-              "en": "User Status",
-              "no": "Brukerstatus"
-            },
-            "values": [
-              {
-                "id": "1",
-                "title": {
-                  "en": "Occupied / Enabled",
-                  "no": "Opptatt / Aktivert"
-                }
-              },
-              {
-                "id": "3",
-                "title": {
-                  "en": "Occupied / Disabled",
-                  "no": "Opptatt / Deaktivert"
-                }
-              }
-            ]
-          },
-          {
-            "type": "dropdown",
-            "name": "userType",
-            "title": {
-              "en": "User Type",
-              "no": "Brukertype"
-            },
-            "values": [
-              {
-                "id": "0",
-                "title": {
-                  "en": "Unrestricted User (default)",
-                  "no": "Ubegrenset bruker (standard)"
-                }
-              },
-              {
-                "id": "1",
-                "title": {
-                  "en": "Year Day Schedule User",
-                  "no": "År / Dagsplan bruker"
-                }
-              },
-              {
-                "id": "2",
-                "title": {
-                  "en": "Week Day Schedule User",
-                  "no": "Uke / Dagsplan bruker"
-                }
-              },
-              {
-                "id": "3",
-                "title": {
-                  "en": "Master User",
-                  "no": "Master bruker"
-                }
-              },
-              {
-                "id": "4",
-                "title": {
-                  "en": "Non Access User",
-                  "no": "Bruker uten tilgang"
-                }
-              }
-            ]
           },
           {
             "type": "number",
