@@ -2,7 +2,7 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
-const { convertUint8ToString } = require('../../lib/util');
+const { convertUint8ToString, convertStringToHex } = require('../../lib/util');
 const DoorLockBoundCluster = require('../../lib/DoorLockBoundCluster');
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
@@ -136,20 +136,7 @@ class HTSLM2 extends ZigBeeDevice {
         if (changedKeys.includes('batteryThreshold')) {
             this.batteryThreshold = newSettings.batteryThreshold;
         } else if (changedKeys.includes('soundVolume')) {
-            let soundVolume;
-            switch (newSettings.soundVolume) {
-                case 'off':
-                    soundVolume = 0x00;
-                    break;
-                case 'low':
-                    soundVolume = 0x01;
-                    break;
-                case 'high':
-                    soundVolume = 0x02;
-                    break;
-                default:
-                    break;
-            }
+            const soundVolume = await convertStringToHex(newSettings.soundVolume);
             await this.zclNode.endpoints[1].clusters.doorLock.writeAttributes({ soundVolume: soundVolume }).then(() => {
                 this.homey.app.log('Sound volume has been changed from ' + oldSettings.soundVolume + ' to ' + newSettings.soundVolume, 'HT-SLM-2');
             }).catch(e => this.homey.app.log(e, 'HT-SLM-2', 'ERROR'));
