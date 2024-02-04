@@ -1,7 +1,29 @@
 {
     "Heimgard": {
         "settings": {
-            "title": "Heimgard - Debug logger"
+            "title": "Heimgard - Debug logger",
+            "operation": {
+                "title": "Legg til/fjern brukere"
+            },
+            "addPin": {
+                "title": "Legg til PIN-kode",
+                "userID": "Bruker-ID",
+                "userPin": "Bruker-PIN",
+                "saveBtn": "Lagre",
+                "userStatus": {
+                    "title": "Brukerstatus",
+                    "occupied": "Opptatt / Aktivert",
+                    "occupiedDisabled": "Opptatt / Deaktivert"
+                },
+                "userType": {
+                    "title": "Brukertype",
+                    "unrestrictedUser": "Ubegrenset bruker (standard)",
+                    "yearDayScheduleUser": "År / Dagsplan bruker",
+                    "weekDayScheduleUser": "Uke / Dagsplan bruker",
+                    "masterUser": "Master bruker",
+                    "nonAccessUser": "Bruker uten tilgang"
+                }
+            }
         }
     }
 }

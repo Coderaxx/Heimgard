@@ -1,7 +1,29 @@
 {
     "Heimgard": {
         "settings": {
-            "title": "Heimgard - Debug logs"
+            "title": "Heimgard - Debug logs",
+            "operation": {
+                "title": "Add/remove users"
+            },
+            "addPin": {
+                "title": "Add PIN Code",
+                "userID": "User ID",
+                "userPin": "User PIN",
+                "saveBtn": "Save",
+                "userStatus": {
+                    "title": "User status",
+                    "occupied": "Occupied / Enabled",
+                    "occupiedDisabled": "Occupied / Disabled"
+                },
+                "userType": {
+                    "title": "User type",
+                    "unrestrictedUser": "Unrestricted User (default)",
+                    "yearDayScheduleUser": "Year Day Schedule User",
+                    "weekDayScheduleUser": "Week Day Schedule User",
+                    "masterUser": "Master User",
+                    "nonAccessUser": "Non Access User"
+                }
+            }
         }
     }
 }

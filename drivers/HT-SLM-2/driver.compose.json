@@ -1,76 +1,76 @@
 {
-  "name": {
-    "en": "Heimgard HT-SLM-2",
-    "no": "Heimgard HT-SLM-2"
-  },
-  "class": "lock",
-  "capabilities": [
-    "measure_battery",
-    "alarm_battery",
-    "locked"
-  ],
-  "platforms": [
-    "local"
-  ],
-  "connectivity": [
-    "zigbee"
-  ],
-  "icon": "{{driverAssetsPath}}/icon.svg",
-  "zigbee": {
-    "manufacturerName": "Heimgard Technologies",
-    "productId": [
-      "HT-SLM-2"
+    "name": {
+        "en": "Heimgard HT-SLM-2",
+        "no": "Heimgard HT-SLM-2"
+    },
+    "class": "lock",
+    "capabilities": [
+        "measure_battery",
+        "alarm_battery",
+        "locked"
     ],
-    "endpoints": {
-      "1": {
-        "clusters": [
-          0,
-          1,
-          3,
-          4,
-          5,
-          257
+    "platforms": [
+        "local"
+    ],
+    "connectivity": [
+        "zigbee"
+    ],
+    "icon": "{{driverAssetsPath}}/icon.svg",
+    "images": {
+        "small": "{{driverAssetsPath}}/images/small.png",
+        "large": "{{driverAssetsPath}}/images/large.png",
+        "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    },
+    "zigbee": {
+        "manufacturerName": "Heimgard Technologies",
+        "productId": [
+            "HT-SLM-2"
         ],
-        "bindings": [
-          0,
-          1,
-          3,
-          257
+        "endpoints": {
+            "1": {
+                "clusters": [
+                    0,
+                    1,
+                    3,
+                    4,
+                    5,
+                    257
+                ],
+                "bindings": [
+                    0,
+                    1,
+                    3,
+                    257
+                ]
+            }
+        },
+        "learnmode": {
+            "image": "{{driverAssetsPath}}/learnmode.svg",
+            "instruction": {
+                "en": "1. Press and hold function button [3 sec]\r\n2. Enter [Master PIN] [*]\r\n3. Press [1] [*]\r\n4. Press [1] [*]\r\n5. Touch pad will blink green to confirm succeeded inclusion",
+                "no": "1. Trykk og hold inne funksjonsknappen [3 sek]\r\n2. Skriv inn [hoved-PIN] [*]\r\n3. Trykk på [1] [*]\r\n4. Trykk på [1] [*]\r\n5. Panelet blinker grønt for å bekrefte at inkluderingen er vellykket"
+            }
+        }
+    },
+    "pair": [
+        {
+            "id": "list_devices",
+            "template": "list_devices",
+            "navigation": {
+                "next": "add_devices"
+            },
+            "options": {
+                "singular": true
+            }
+        },
+        {
+            "id": "add_devices",
+            "template": "add_devices"
+        }
+    ],
+    "energy": {
+        "batteries": [
+            "AA"
         ]
-      }
-    },
-    "learnmode": {
-      "image": "{{driverAssetsPath}}/learnmode.svg",
-      "instruction": {
-        "en": "1. Press and hold function button [3 sec]\r\n2. Enter [Master PIN] [*]\r\n3. Press [1] [*]\r\n4. Press [1] [*]\r\n5. Touch pad will blink green to confirm succeeded inclusion",
-        "no": "1. Trykk og hold inne funksjonsknappen [3 sek]\r\n2. Skriv inn [hoved-PIN] [*]\r\n3. Trykk på [1] [*]\r\n4. Trykk på [1] [*]\r\n5. Panelet blinker grønt for å bekrefte at inkluderingen er vellykket"
-      }
     }
-  },
-  "pair": [
-    {
-      "id": "list_devices",
-      "template": "list_devices",
-      "navigation": {
-        "next": "add_devices"
-      },
-      "options": {
-        "singular": true
-      }
-    },
-    {
-      "id": "add_devices",
-      "template": "add_devices"
-    }
-  ],
-  "images": {
-    "small": "{{driverAssetsPath}}/images/small.png",
-    "large": "{{driverAssetsPath}}/images/large.png",
-    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
-  },
-  "energy": {
-    "batteries": [
-      "AA"
-    ]
-  }
 }

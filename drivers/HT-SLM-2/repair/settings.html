@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+		<style type="text/css">
+			.tg {
+				border-collapse: collapse;
+				border-color: #ccc;
+				border-spacing: 0;
+				margin: 0px auto;
+			}
+
+			.tg td {
+				background-color: #fff;
+				border-color: #ccc;
+				border-style: solid;
+				border-width: 1px;
+				color: #333;
+				font-family: Arial, sans-serif;
+				font-size: 14px;
+				overflow: hidden;
+				padding: 10px 5px;
+				word-break: normal;
+			}
+
+			.tg th {
+				background-color: #f0f0f0;
+				border-color: #ccc;
+				border-style: solid;
+				border-width: 1px;
+				color: #333;
+				font-family: Arial, sans-serif;
+				font-size: 14px;
+				font-weight: normal;
+				overflow: hidden;
+				padding: 10px 5px;
+				word-break: normal;
+			}
+
+			.tg .tg-baqh {
+				text-align: center;
+				vertical-align: top
+			}
+
+			.tg .tg-rz9m {
+				position: -webkit-sticky;
+				position: sticky;
+				text-align: center;
+				top: -1px;
+				vertical-align: top;
+				will-change: transform
+			}
+
+			.tg .tg-0lax {
+				text-align: left;
+				vertical-align: top
+			}
+
+			@media screen and (max-width: 767px) {
+				.tg {
+					width: auto !important;
+				}
+
+				.tg col {
+					width: auto !important;
+				}
+
+				.tg-wrap {
+					overflow-x: auto;
+					-webkit-overflow-scrolling: touch;
+					margin: auto 0px;
+				}
+			}
+
+			/* Style the tab */
+			.tab {
+				overflow: hidden;
+				border: 1px solid #ccc;
+				background-color: #f1f1f1;
+			}
+
+			/* Style the buttons that are used to open the tab content */
+			.tab button {
+				background-color: inherit;
+				float: left;
+				border: none;
+				outline: none;
+				cursor: pointer;
+				padding: 14px 16px;
+				transition: 0.3s;
+			}
+
+			/* Change background color of buttons on hover */
+			.tab button:hover {
+				background-color: #ddd;
+			}
+
+			/* Create an active/current tablink class */
+			.tab button.active {
+				background-color: #ccc;
+			}
+
+			/* Style the tab content */
+			.tabcontent {
+				display: none;
+				padding: 6px 12px;
+				border: 1px solid #ccc;
+				border-top: none;
+			}
+
+			.tabcontent {
+				animation: fadeEffect 1s;
+				/* Fading effect takes 1 second */
+			}
+
+			/* Go from zero to full opacity */
+			@keyframes fadeEffect {
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="tabcontent">
+			<fieldset class="homey-form-fieldset">
+				<header class="homey-header">
+					<h1 class="homey-title" data-i18n="Heimgard.settings.operation.title"></h1>
+				</header>
+				<form class="homey-form">
+					<fieldset class="homey-form-fieldset">
+						<legend class="homey-form-legend"><span data-i18n="Heimgard.settings.addPin.title"></span></legend>
+
+						<div class="homey-form-group">
+							<label class="homey-form-label" for="userId" data-i18n="Heimgard.settings.addPin.userID">User-ID</label>
+							<input class="homey-form-input" id="userId" type="number" min="0" max="40" value="" />
+						</div>
+						<div class="homey-form-group">
+							<label class="homey-form-label" for="userStatus" data-i18n="Heimgard.settings.addPin.userStatus.title">User Status</label>
+							<select class="homey-form-select" name="userStatus" id="userStatus">
+								<option value="1" data-i18n="Heimgard.settings.addPin.userStatus.occupied">Occupied / Enabled</option>
+								<option value="3" data-i18n="Heimgard.settings.addPin.userStatus.occupiedDisabled">Occupied / Disabled</option>
+							</select>
+						</div>
+						<div class="homey-form-group">
+							<label class="homey-form-label" for="userType" data-i18n="Heimgard.settings.addPin.userType.title">User Type</label>
+							<select class="homey-form-select" name="userType" id="userType">
+								<option value="0" data-i18n="Heimgard.settings.addPin.userType.unrestrictedUser">Unrestricted User (default)</option>
+								<option value="1" data-i18n="Heimgard.settings.addPin.userType.yearDaySchedule">Year Day Schedule User</option>
+								<option value="2" data-i18n="Heimgard.settings.addPin.userType.weekDaySchedule">Week Day Schedule User</option>
+								<option value="3" data-i18n="Heimgard.settings.addPin.userType.masterUser">Master User</option>
+								<option value="4" data-i18n="Heimgard.settings.addPin.userType.nonAccessUser">Non Access User</option>
+							</select>
+						</div>
+						<div class="homey-form-group">
+							<label class="homey-form-label" for="userPinCode" data-i18n="Heimgard.settings.addPin.userPin">User PIN</label>
+							<input class="homey-form-input" id="userPinCode" type="number" minlength="4" maxlength="10" value="" />
+						</div>
+						<button id="savePin" type="submit" class="homey-button-primary-full" data-i18n="Heimgard.settings.addPin.saveBtn"></button>
+					</fieldset>
+				</form>
+				<form class="homey-form">
+
+				</form>
+			</fieldset>
+		</div>
+	</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script type="text/javascript">
+		function onHomeyReady(Homey) {
+			Homey.ready();
+			console.log('[\x1b[36mDEBUG\x1b[0m]', 'Homey is ready!');
+
+			$('#savePin').click(function() {
+				var userId = $('#userId').val();
+				var userStatus = $('#userStatus').val();
+				var userType = $('#userType').val();
+				var userPinCode = $('#userPinCode').val();
+				Homey.emit('addUser', {
+					userId,
+					userStatus,
+					userType,
+					userPinCode
+				}).then((result) => {
+					console.log('[\x1b[36mDEBUG\x1b[0m]', result);
+				});
+			});
+		}
+	</script>
+
+</html>

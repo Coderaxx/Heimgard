@@ -1,0 +1,33 @@
+{
+    "title": {
+        "en": "Set User PIN",
+        "no": "Sett bruker-PIN"
+    },
+    "hint": {
+        "en": "Adds a PIN code to the user slot provided",
+        "no": "Legger til en PIN-kode til angitt bruker-id"
+    },
+    "args": [
+        {
+            "type": "number",
+            "name": "ID",
+            "min": 3,
+            "max": 40,
+            "step": 1
+        },
+        {
+            "type": "number",
+            "name": {
+                "en": "PIN-Code",
+                "no": "PIN-kode"
+            },
+            "placeholder": {
+                "en": "PIN Code",
+                "no": "PIN-kode"
+            },
+            "min": 1000,
+            "max": 9999999999,
+            "step": 1
+        }
+    ]
+}

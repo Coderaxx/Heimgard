@@ -58,6 +58,49 @@
     ]
   },
   "source": "https://github.com/Coderaxx/Heimgard",
+  "flow": {
+    "actions": [
+      {
+        "id": "setUserPin",
+        "title": {
+          "en": "Set User PIN",
+          "no": "Sett bruker-PIN"
+        },
+        "hint": {
+          "en": "Adds a PIN code to the user slot provided",
+          "no": "Legger til en PIN-kode til angitt bruker-id"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          },
+          {
+            "type": "number",
+            "name": "ID",
+            "min": 3,
+            "max": 40,
+            "step": 1
+          },
+          {
+            "type": "number",
+            "name": {
+              "en": "PIN-Code",
+              "no": "PIN-kode"
+            },
+            "placeholder": {
+              "en": "PIN Code",
+              "no": "PIN-kode"
+            },
+            "min": 1000,
+            "max": 9999999999,
+            "step": 1
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -77,6 +120,11 @@
         "zigbee"
       ],
       "icon": "/drivers/HT-SLM-2/assets/icon.svg",
+      "images": {
+        "small": "/drivers/HT-SLM-2/assets/images/small.png",
+        "large": "/drivers/HT-SLM-2/assets/images/large.png",
+        "xlarge": "/drivers/HT-SLM-2/assets/images/xlarge.png"
+      },
       "zigbee": {
         "manufacturerName": "Heimgard Technologies",
         "productId": [
@@ -124,11 +172,6 @@
           "template": "add_devices"
         }
       ],
-      "images": {
-        "small": "/drivers/HT-SLM-2/assets/images/small.png",
-        "large": "/drivers/HT-SLM-2/assets/images/large.png",
-        "xlarge": "/drivers/HT-SLM-2/assets/images/xlarge.png"
-      },
       "energy": {
         "batteries": [
           "AA"
