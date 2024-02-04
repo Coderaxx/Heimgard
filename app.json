@@ -175,6 +175,58 @@
           }
         ],
         "filter": "driver_id=HT-SLM-2"
+      },
+      {
+        "id": "deleteUserPin",
+        "title": {
+          "en": "Delete User PIN",
+          "no": "Fjern bruker-PIN"
+        },
+        "titleFormatted": {
+          "en": "Delete PIN for ID [[userID]]",
+          "no": "Fjern PIN for ID [[userID]]"
+        },
+        "hint": {
+          "en": "Removes the PIN code from the user slot provided",
+          "no": "Fjerner PIN-kode fra angitt bruker-id"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          },
+          {
+            "type": "number",
+            "name": "userID",
+            "title": {
+              "en": "User ID",
+              "no": "Bruker-ID"
+            },
+            "placeholder": "5",
+            "min": 3,
+            "max": 40,
+            "step": 1
+          }
+        ]
+      },
+      {
+        "id": "deleteAllUserPins",
+        "title": {
+          "en": "Delete All User PINs",
+          "no": "Fjern alle bruker-PIN"
+        },
+        "hint": {
+          "en": "Removes all PIN codes from all user slots",
+          "no": "Fjerner alle PIN-koder fra alle bruker-slottene"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          }
+        ]
       }
     ]
   },

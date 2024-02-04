@@ -2,17 +2,18 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
+const { convertUint8ToString } = require('../../lib/util');
 const DoorLockBoundCluster = require('../../lib/DoorLockBoundCluster');
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
-debug(true);
+//debug(true);
 
 class HTSLM2 extends ZigBeeDevice {
     async onNodeInit({ zclNode }) {
         this.homey.app.log('Started device initialization. Initializing node...', 'HT-SLM-2');
         this.settings = await this.getSettings();
-        this.enableDebug();
+        //this.enableDebug();
         //this.printNode();
 
         //this.log(await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].discoverCommandsGenerated());
@@ -85,22 +86,11 @@ class HTSLM2 extends ZigBeeDevice {
             },
         });
 
+        zclNode.endpoints[1].clusters.powerConfiguration.on('attr.batteryPercentageRemaining', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('attr.lockState', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('attr.soundVolume', this._onReport.bind(this));
-        zclNode.endpoints[1].clusters.powerConfiguration.on('attr.batteryPercentageRemaining', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('event.operatingEventNotification', this._onOperatingEventNotification.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('event.programmingEventNotification', this._onProgrammingEventNotification.bind(this));
-
-        await zclNode.endpoints[1].clusters[CLUSTER.DOOR_LOCK.NAME].getPinCode({
-            userID: 5,
-        }).then((res) => {
-            this.homey.app.log('Received response for getPinCode command:', 'HT-SLM-2', 'DEBUG', {
-                userID: res.userID,
-                userStatus: res.userStatus,
-                userType: res.userType,
-                pinCode: res.pinCode.toString(),
-            });
-        }).catch(e => this.homey.app.log(e, 'HT-SLM-2', 'ERROR'));
 
         await this.initFlows();
 
@@ -111,13 +101,29 @@ class HTSLM2 extends ZigBeeDevice {
         const setUserPIn = this.homey.flow.getActionCard('setUserPin');
         setUserPIn.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.setPinCode({
-                userID: parseInt(args.userID) || args.userID,
-                userStatus: parseInt(args.userStatus) || args.userStatus,
-                userType: parseInt(args.userType) || args.userType,
+                userID: args.userID,
+                userStatus: args.userStatus,
+                userType: args.userType,
                 pinCode: Buffer.from(`${args.pinCode}`),
             }).then(() => {
                 this.homey.app.log(`Added a new user with ID ${args.userID} and PIN ${args.pinCode}. (UserType: ${args.userType} | UserStatus: ${args.userStatus})`, 'HT-SLM-2');
             }).catch(e => this.homey.app.log('Failed to add a new user:', 'HT-SLM-2', 'ERROR', e));
+        });
+
+        const deleteUserPIn = this.homey.flow.getActionCard('deleteUserPin');
+        deleteUserPIn.registerRunListener(async (args) => {
+            await this.zclNode.endpoints[1].clusters.doorLock.clearPinCode({
+                userID: args.userID
+            }).then(() => {
+                this.homey.app.log(`Deleted user with ID ${args.userID}.`, 'HT-SLM-2');
+            }).catch(e => this.homey.app.log('Failed to delete user:', 'HT-SLM-2', 'ERROR', e));
+        });
+
+        const deleteAllUserPins = this.homey.flow.getActionCard('deleteAllUserPins');
+        deleteAllUserPins.registerRunListener(async (args) => {
+            await this.zclNode.endpoints[1].clusters.doorLock.clearAllPinCodes().then(() => {
+                this.homey.app.log(`Deleted all user pins.`, 'HT-SLM-2');
+            }).catch(e => this.homey.app.log('Failed to delete user:', 'HT-SLM-2', 'ERROR', e));
         });
 
         this.homey.app.log('HT-SLM-2 flows were initialized', 'HT-SLM-2');
@@ -161,11 +167,12 @@ class HTSLM2 extends ZigBeeDevice {
         this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
-    _onOperatingEventNotification(payload) {
+    async _onOperatingEventNotification(payload) {
+        payload = await convertUint8ToString(payload);
         this.homey.app.log('Received an operating event notification:', 'HT-SLM-2', 'DEBUG', payload);
     }
 
-    _onProgrammingEventNotification(payload) {
+    async _onProgrammingEventNotification(payload) {
         this.homey.app.log('Received a programming event notification:', 'HT-SLM-2', 'DEBUG', payload);
     }
 
