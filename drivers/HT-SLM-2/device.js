@@ -3,7 +3,6 @@
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
 const { convertUint8ToString, convertStringToHex } = require('../../lib/util');
-const DoorLockBoundCluster = require('../../lib/DoorLockBoundCluster');
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
