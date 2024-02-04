@@ -88,7 +88,6 @@ class HTSLM2 extends ZigBeeDevice {
 
         zclNode.endpoints[1].clusters.powerConfiguration.on('attr.batteryPercentageRemaining', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('attr.lockState', this._onReport.bind(this));
-        zclNode.endpoints[1].clusters.doorLock.on('attr.soundVolume', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('event.operatingEventNotification', this._onOperatingEventNotification.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('event.programmingEventNotification', this._onProgrammingEventNotification.bind(this));
 
