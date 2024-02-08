@@ -110,7 +110,7 @@ class HTSLM2 extends ZigBeeDevice {
         this._unlockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('unlockWithSpecificMethod');
         this._unlockWithSpecificMethod.registerRunListener(async (args, state) => {
             if (args.userID === state.userID && args.method === state.method) {
-                this.homey.app.log(`The lock has been unlocked with method ${args.method}`, 'HT-SLM-2');
+                this.homey.app.log(`The lock was unlocked with ${args.method}`, 'HT-SLM-2');
                 return true;
             }
             return false;
@@ -118,7 +118,7 @@ class HTSLM2 extends ZigBeeDevice {
         this._lockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('lockWithSpecificMethod');
         this._lockWithSpecificMethod.registerRunListener(async (args, state) => {
             if (args.userID === state.userID && args.method === state.method) {
-                this.homey.app.log(`The lock has been locked with method ${args.method}`, 'HT-SLM-2');
+                this.homey.app.log(`The lock was locked with ${args.method}`, 'HT-SLM-2');
                 return true;
             }
             return false;
