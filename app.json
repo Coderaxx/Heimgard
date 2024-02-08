@@ -75,6 +75,15 @@
               "no": "Bruker-ID"
             },
             "example": 5
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "example": "Keypad"
           }
         ],
         "args": [
@@ -100,6 +109,15 @@
               "no": "Bruker-ID"
             },
             "example": 5
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "example": "Keypad"
           }
         ],
         "args": [
