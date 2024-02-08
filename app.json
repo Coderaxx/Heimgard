@@ -12,8 +12,8 @@
     "no": "Heimgard"
   },
   "description": {
-    "en": "Heimgard. Simple, flexible and secure.",
-    "no": "Heimgard. Simple, flexible and secure."
+    "en": "Simple, flexible and secure.",
+    "no": "Enkelt, fleksibelt og sikkert."
   },
   "category": [
     "security"
@@ -59,6 +59,238 @@
   },
   "source": "https://github.com/Coderaxx/Heimgard",
   "flow": {
+    "triggers": [
+      {
+        "id": "userUnlock",
+        "title": {
+          "en": "User Unlocks the Lock",
+          "no": "Bruker låser opp"
+        },
+        "tokens": [
+          {
+            "name": "userID",
+            "type": "number",
+            "title": {
+              "en": "User ID",
+              "no": "Bruker-ID"
+            },
+            "example": 5
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          }
+        ]
+      },
+      {
+        "id": "userLock",
+        "title": {
+          "en": "User Locks the Lock",
+          "no": "Bruker låser"
+        },
+        "tokens": [
+          {
+            "name": "userID",
+            "type": "number",
+            "title": {
+              "en": "User ID",
+              "no": "Bruker-ID"
+            },
+            "example": 5
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          }
+        ]
+      },
+      {
+        "id": "unlockWithSpecificMethod",
+        "title": {
+          "en": "Lock was Unlocked with Specific Method",
+          "no": "Låsen ble låst opp med spesifikk metode"
+        },
+        "titleFormatted": {
+          "en": "Lock was Unlocked with [[method]]",
+          "no": "Låsen ble låst opp med [[method]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          },
+          {
+            "type": "dropdown",
+            "name": "method",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "values": [
+              {
+                "id": "Keypad",
+                "title": {
+                  "en": "Keypad",
+                  "no": "Tastatur"
+                }
+              },
+              {
+                "id": "RF",
+                "title": {
+                  "en": "RF",
+                  "no": "RF"
+                }
+              },
+              {
+                "id": "Manual",
+                "title": {
+                  "en": "Manual",
+                  "no": "Manuell"
+                }
+              },
+              {
+                "id": "RFID",
+                "title": {
+                  "en": "RFID",
+                  "no": "RFID"
+                }
+              },
+              {
+                "id": "Fingerprint",
+                "title": {
+                  "en": "Fingerprint",
+                  "no": "Fingeravtrykk"
+                }
+              },
+              {
+                "id": "Indeterminate",
+                "title": {
+                  "en": "Indeterminate",
+                  "no": "Uspesifisert"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "userID",
+            "type": "number",
+            "title": {
+              "en": "User ID",
+              "no": "Bruker-ID"
+            },
+            "example": 5
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "example": "Keypad"
+          }
+        ]
+      },
+      {
+        "id": "lockWithSpecificMethod",
+        "title": {
+          "en": "Lock was Locked with Specific Method",
+          "no": "Låsen ble låst med spesifikk metode"
+        },
+        "titleFormatted": {
+          "en": "Lock was Locked with [[method]]",
+          "no": "Låsen ble låst med [[method]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=HT-SLM-2"
+          },
+          {
+            "type": "dropdown",
+            "name": "method",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "values": [
+              {
+                "id": "Keypad",
+                "title": {
+                  "en": "Keypad",
+                  "no": "Tastatur"
+                }
+              },
+              {
+                "id": "RF",
+                "title": {
+                  "en": "RF",
+                  "no": "RF"
+                }
+              },
+              {
+                "id": "Manual",
+                "title": {
+                  "en": "Manual",
+                  "no": "Manuell"
+                }
+              },
+              {
+                "id": "RFID",
+                "title": {
+                  "en": "RFID",
+                  "no": "RFID"
+                }
+              },
+              {
+                "id": "Fingerprint",
+                "title": {
+                  "en": "Fingerprint",
+                  "no": "Fingeravtrykk"
+                }
+              },
+              {
+                "id": "Indeterminate",
+                "title": {
+                  "en": "Indeterminate",
+                  "no": "Uspesifisert"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "userID",
+            "type": "number",
+            "title": {
+              "en": "User ID",
+              "no": "Bruker-ID"
+            },
+            "example": 5
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "title": {
+              "en": "Method",
+              "no": "Metode"
+            },
+            "example": "Keypad"
+          }
+        ]
+      }
+    ],
     "actions": [
       {
         "id": "setUserPin",
@@ -170,7 +402,6 @@
       "class": "lock",
       "capabilities": [
         "measure_battery",
-        "alarm_battery",
         "locked"
       ],
       "platforms": [
@@ -270,24 +501,6 @@
               }
             }
           ]
-        },
-        {
-          "id": "batteryThreshold",
-          "type": "number",
-          "label": {
-            "en": "Low Battery Alarm Threshold (%)",
-            "no": "Lavt batteri alarm terskel (%)"
-          },
-          "hint": {
-            "en": "This setting determines the threshold before a battery alarm is given.",
-            "no": "Denne innstillingen bestemmer når lavt batteri alarm skal gis."
-          },
-          "value": 20,
-          "attr": {
-            "step": 1,
-            "min": 1,
-            "max": 99
-          }
         }
       ]
     }

@@ -64,27 +64,6 @@ class HTSLM2 extends ZigBeeDevice {
             },
         });
 
-        this.batteryThreshold = this.settings.batteryThreshold || 20;
-        this.registerCapability('alarm_battery', CLUSTER.POWER_CONFIGURATION, {
-            get: 'batteryPercentageRemaining',
-            report: 'batteryPercentageRemaining',
-            reportParser(report) {
-                if (report && report < this.batteryThreshold) return true;
-                return false;
-            },
-            reportOpts: {
-                configureAttributeReporting: {
-                    minInterval: 0,
-                    maxInterval: 10800,
-                    minChange: 1,
-                },
-            },
-            getOpts: {
-                getOnStart: true,
-                getOnOnline: true,
-            },
-        });
-
         zclNode.endpoints[1].clusters.powerConfiguration.on('attr.batteryPercentageRemaining', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('attr.lockState', this._onReport.bind(this));
         zclNode.endpoints[1].clusters.doorLock.on('attr.soundVolume', this._onReport.bind(this));
@@ -97,8 +76,8 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async initFlows() {
-        const setUserPIn = this.homey.flow.getActionCard('setUserPin');
-        setUserPIn.registerRunListener(async (args) => {
+        this._setUserPIn = this.homey.flow.getActionCard('setUserPin');
+        this._setUserPIn.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.setPinCode({
                 userID: args.userID,
                 userStatus: 0x01,
@@ -109,8 +88,8 @@ class HTSLM2 extends ZigBeeDevice {
             }).catch(e => this.homey.app.log('Failed to add a new user:', 'HT-SLM-2', 'ERROR', e));
         });
 
-        const deleteUserPIn = this.homey.flow.getActionCard('deleteUserPin');
-        deleteUserPIn.registerRunListener(async (args) => {
+        this._deleteUserPIn = this.homey.flow.getActionCard('deleteUserPin');
+        this._deleteUserPIn.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.clearPinCode({
                 userID: args.userID
             }).then(() => {
@@ -118,11 +97,31 @@ class HTSLM2 extends ZigBeeDevice {
             }).catch(e => this.homey.app.log('Failed to delete user:', 'HT-SLM-2', 'ERROR', e));
         });
 
-        const deleteAllUserPins = this.homey.flow.getActionCard('deleteAllUserPins');
-        deleteAllUserPins.registerRunListener(async (args) => {
+        this._deleteAllUserPins = this.homey.flow.getActionCard('deleteAllUserPins');
+        this._deleteAllUserPins.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.clearAllPinCodes().then(() => {
                 this.homey.app.log(`Deleted all user pins.`, 'HT-SLM-2');
             }).catch(e => this.homey.app.log('Failed to delete user:', 'HT-SLM-2', 'ERROR', e));
+        });
+
+        this._userUnlock = this.homey.flow.getDeviceTriggerCard('userUnlock');
+        this._userLock = this.homey.flow.getDeviceTriggerCard('userLock');
+        
+        this._unlockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('unlockWithSpecificMethod');
+        this._unlockWithSpecificMethod.registerRunListener(async (args, state) => {
+            if (args.userID === state.userID && args.method === state.method) {
+                this.homey.app.log(`The lock has been unlocked with method ${args.method}`, 'HT-SLM-2');
+                return true;
+            }
+            return false;
+        });
+        this._lockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('lockWithSpecificMethod');
+        this._lockWithSpecificMethod.registerRunListener(async (args, state) => {
+            if (args.userID === state.userID && args.method === state.method) {
+                this.homey.app.log(`The lock has been locked with method ${args.method}`, 'HT-SLM-2');
+                return true;
+            }
+            return false;
         });
 
         this.homey.app.log('HT-SLM-2 flows were initialized', 'HT-SLM-2');
@@ -150,11 +149,36 @@ class HTSLM2 extends ZigBeeDevice {
     }
 
     async onDeleted() {
+        this._setUserPIn = null;
+        this._deleteUserPIn = null;
+        this._deleteAllUserPins = null;
+        this._userUnlock = null;
+        this._userLock = null;
+        this._unlockWithSpecificMethod = null;
+        this._lockWithSpecificMethod = null;
+
         this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
     async _onOperatingEventNotification(payload) {
         payload = await convertUint8ToString(payload);
+
+        if (payload) {
+            if (payload.operationEventCode && payload.userID) {
+                if (payload.operationEventCode === 'Unlock') {
+                    this._userUnlock.trigger(this, { userID: payload.userID });
+                    this._unlockWithSpecificMethod.trigger(this, { userID: payload.userID, method: payload.operationEventSource }, { method: payload.operationEventSource });
+
+                    this.homey.app.log(`User ${payload.userID} has unlocked the door.`, 'HT-SLM-2');
+                } else if (payload.operationEventCode === 'Lock') {
+                    this._userLock.trigger(this, { userID: payload.userID });
+                    this._lockWithSpecificMethod.trigger(this, { userID: payload.userID, method: payload.operationEventSource }, { method: payload.operationEventSource });
+
+                    this.homey.app.log(`User ${payload.userID} has locked the door.`, 'HT-SLM-2');
+                }
+            }
+        }
+
         this.homey.app.log('Received an operating event notification:', 'HT-SLM-2', 'DEBUG', payload);
     }
 
