@@ -106,7 +106,7 @@ class HTSLM2 extends ZigBeeDevice {
 
         this._userUnlock = this.homey.flow.getDeviceTriggerCard('userUnlock');
         this._userLock = this.homey.flow.getDeviceTriggerCard('userLock');
-        
+
         this._unlockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('unlockWithSpecificMethod');
         this._unlockWithSpecificMethod.registerRunListener(async (args, state) => {
             if (args.userID === state.userID && args.method === state.method) {
@@ -166,12 +166,12 @@ class HTSLM2 extends ZigBeeDevice {
         if (payload) {
             if (payload.operationEventCode && payload.userID) {
                 if (payload.operationEventCode === 'Unlock') {
-                    this._userUnlock.trigger(this, { userID: payload.userID });
+                    this._userUnlock.trigger(this, { userID: payload.userID, method: payload.operationEventSource });
                     this._unlockWithSpecificMethod.trigger(this, { userID: payload.userID, method: payload.operationEventSource }, { method: payload.operationEventSource });
 
                     this.homey.app.log(`User ${payload.userID} has unlocked the door.`, 'HT-SLM-2');
                 } else if (payload.operationEventCode === 'Lock') {
-                    this._userLock.trigger(this, { userID: payload.userID });
+                    this._userLock.trigger(this, { userID: payload.userID, method: payload.operationEventSource });
                     this._lockWithSpecificMethod.trigger(this, { userID: payload.userID, method: payload.operationEventSource }, { method: payload.operationEventSource });
 
                     this.homey.app.log(`User ${payload.userID} has locked the door.`, 'HT-SLM-2');
