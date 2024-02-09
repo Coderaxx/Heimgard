@@ -107,16 +107,17 @@ class HTSLM2 extends ZigBeeDevice {
 
         this._getUserPin = this.homey.flow.getActionCard('getUserPin');
         this._getUserPin.registerRunListener(async (args) => {
-            await this.zclNode.endpoints[1].clusters.doorLock.getPinCode({
+            const pinCode = await this.zclNode.endpoints[1].clusters.doorLock.getPinCode({
                 userID: args.userID
             }).then((pinCode) => {
                 pinCode = Buffer.from(pinCode.pinCode).toString('utf8');
                 this.homey.app.log(`The PIN for user ${args.userID} is ${pinCode}`, 'HT-SLM-2');
-                this.log(typeof pinCode);
 
-                return { pinCode };
+                return pinCode;
             }).catch(e => this.homey.app.log('Failed to get PIN:', 'HT-SLM-2', 'ERROR', e));
-        })
+
+            return { pinCode: pinCode };
+        });
 
         this._userUnlock = this.homey.flow.getDeviceTriggerCard('userUnlock');
         this._userLock = this.homey.flow.getDeviceTriggerCard('userLock');
