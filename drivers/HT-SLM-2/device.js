@@ -2,7 +2,7 @@
 
 const { ZigBeeDevice } = require('homey-zigbeedriver');
 const { Cluster, CLUSTER, debug } = require('zigbee-clusters');
-const { convertUint8ToString, convertStringToHex } = require('../../lib/util');
+const { convertUint8ToString, convertStringToHex, convertHexToString } = require('../../lib/util');
 const HeimgardDoorLockCluster = require('../../lib/HeimgardDoorLockCluster');
 Cluster.addCluster(HeimgardDoorLockCluster);
 
@@ -71,6 +71,7 @@ class HTSLM2 extends ZigBeeDevice {
         zclNode.endpoints[1].clusters.doorLock.on('event.programmingEventNotification', this._onProgrammingEventNotification.bind(this));
 
         await this.initFlows();
+        await this.getDeviceSettings(zclNode);
 
         this.homey.app.log('HT-SLM-2 Node has been initialized', 'HT-SLM-2');
     }
@@ -101,15 +102,28 @@ class HTSLM2 extends ZigBeeDevice {
         this._deleteAllUserPins.registerRunListener(async (args) => {
             await this.zclNode.endpoints[1].clusters.doorLock.clearAllPinCodes().then(() => {
                 this.homey.app.log(`Deleted all user pins.`, 'HT-SLM-2');
-            }).catch(e => this.homey.app.log('Failed to delete user:', 'HT-SLM-2', 'ERROR', e));
+            }).catch(e => this.homey.app.log('Failed to delete all users:', 'HT-SLM-2', 'ERROR', e));
         });
+
+        this._getUserPin = this.homey.flow.getActionCard('getUserPin');
+        this._getUserPin.registerRunListener(async (args) => {
+            await this.zclNode.endpoints[1].clusters.doorLock.getPinCode({
+                userID: args.userID
+            }).then((pinCode) => {
+                pinCode = Buffer.from(pinCode.pinCode).toString('utf8');
+                this.homey.app.log(`The PIN for user ${args.userID} is ${pinCode}`, 'HT-SLM-2');
+                this.log(typeof pinCode);
+
+                return { pinCode };
+            }).catch(e => this.homey.app.log('Failed to get PIN:', 'HT-SLM-2', 'ERROR', e));
+        })
 
         this._userUnlock = this.homey.flow.getDeviceTriggerCard('userUnlock');
         this._userLock = this.homey.flow.getDeviceTriggerCard('userLock');
 
         this._unlockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('unlockWithSpecificMethod');
         this._unlockWithSpecificMethod.registerRunListener(async (args, state) => {
-            if (args.userID === state.userID && args.method === state.method) {
+            if (args.method === state.method) {
                 this.homey.app.log(`The lock was unlocked with ${args.method}`, 'HT-SLM-2');
                 return true;
             }
@@ -117,7 +131,7 @@ class HTSLM2 extends ZigBeeDevice {
         });
         this._lockWithSpecificMethod = this.homey.flow.getDeviceTriggerCard('lockWithSpecificMethod');
         this._lockWithSpecificMethod.registerRunListener(async (args, state) => {
-            if (args.userID === state.userID && args.method === state.method) {
+            if (args.method === state.method) {
                 this.homey.app.log(`The lock was locked with ${args.method}`, 'HT-SLM-2');
                 return true;
             }
@@ -127,14 +141,20 @@ class HTSLM2 extends ZigBeeDevice {
         this.homey.app.log('HT-SLM-2 flows were initialized', 'HT-SLM-2');
     }
 
+    async getDeviceSettings(zclNode) {
+        await zclNode.endpoints[1].clusters.doorLock.readAttributes(['soundVolume'])
+            .then(async (soundVolume) => {
+                await this.setSettings({ soundVolume: convertHexToString(soundVolume.soundVolume) });
+                this.homey.app.log(`HT-SLM-2 settings were updated from the device`, 'HT-SLM-2');
+            }).catch(e => this.homey.app.log('Failed to get sound volume:', 'HT-SLM-2', 'ERROR', e));
+    }
+
     async onAdded() {
         this.homey.app.log('HT-SLM-2 has been added', 'HT-SLM-2');
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        if (changedKeys.includes('batteryThreshold')) {
-            this.batteryThreshold = newSettings.batteryThreshold;
-        } else if (changedKeys.includes('soundVolume')) {
+        if (changedKeys.includes('soundVolume')) {
             const soundVolume = await convertStringToHex(newSettings.soundVolume);
             await this.zclNode.endpoints[1].clusters.doorLock.writeAttributes({ soundVolume: soundVolume }).then(() => {
                 this.homey.app.log('Sound volume has been changed from ' + oldSettings.soundVolume + ' to ' + newSettings.soundVolume, 'HT-SLM-2');
@@ -157,6 +177,8 @@ class HTSLM2 extends ZigBeeDevice {
         this._unlockWithSpecificMethod = null;
         this._lockWithSpecificMethod = null;
 
+        super.onDeleted();
+
         this.homey.app.log('HT-SLM-2 has been deleted', 'HT-SLM-2');
     }
 
@@ -164,7 +186,7 @@ class HTSLM2 extends ZigBeeDevice {
         payload = await convertUint8ToString(payload);
 
         if (payload) {
-            if (payload.operationEventCode && payload.userID) {
+            if (payload.hasOwnProperty('operationEventCode') && payload.hasOwnProperty('userID') && payload.hasOwnProperty('operationEventSource')) {
                 if (payload.operationEventCode === 'Unlock') {
                     this._userUnlock.trigger(this, { userID: payload.userID, method: payload.operationEventSource });
                     this._unlockWithSpecificMethod.trigger(this, { userID: payload.userID, method: payload.operationEventSource }, { method: payload.operationEventSource });
