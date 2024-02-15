@@ -23,21 +23,18 @@
                         "no": "Bruker-ID"
                     },
                     "placeholder": "5",
-                    "min": 3,
+                    "min": 1,
                     "max": 40,
                     "step": 1
                 },
                 {
-                    "type": "number",
+                    "type": "text",
                     "name": "pinCode",
                     "title": {
                         "en": "PIN Code",
                         "no": "PIN-kode"
                     },
-                    "placeholder": "1234",
-                    "min": 1000,
-                    "max": 9999999999,
-                    "step": 1
+                    "placeholder": "1234"
                 }
             ],
             "filter": "driver_id=HT-SLM-2"
@@ -65,7 +62,7 @@
                         "no": "Bruker-ID"
                     },
                     "placeholder": "5",
-                    "min": 3,
+                    "min": 1,
                     "max": 40,
                     "step": 1
                 }
@@ -81,6 +78,271 @@
                 "en": "Removes all PIN codes from all user slots",
                 "no": "Fjerner alle PIN-koder fra alle bruker-slottene"
             }
+        },
+        {
+            "id": "getUserPin",
+            "advanced": true,
+            "title": {
+                "en": "Get User PIN",
+                "no": "Hent bruker-PIN"
+            },
+            "titleFormatted": {
+                "en": "Get PIN for ID [[userID]]",
+                "no": "Hent PIN for ID [[userID]]"
+            },
+            "args": [
+                {
+                    "type": "number",
+                    "name": "userID",
+                    "title": {
+                        "en": "User ID",
+                        "no": "Bruker-ID"
+                    },
+                    "placeholder": "5",
+                    "min": 1,
+                    "max": 40,
+                    "step": 1
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "pinCode",
+                    "type": "string",
+                    "title": {
+                        "en": "PIN Code",
+                        "no": "PIN-kode"
+                    },
+                    "example": "1234"
+                }
+            ]
+        }
+    ],
+    "triggers": [
+        {
+            "id": "userLock",
+            "highlight": true,
+            "title": {
+                "en": "User Locks the Lock",
+                "no": "Bruker låser"
+            },
+            "tokens": [
+                {
+                    "name": "userID",
+                    "type": "number",
+                    "title": {
+                        "en": "User ID",
+                        "no": "Bruker-ID"
+                    },
+                    "example": 5
+                },
+                {
+                    "name": "method",
+                    "type": "string",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "example": "Keypad"
+                }
+            ]
+        },
+        {
+            "id": "userUnlock",
+            "highlight": true,
+            "title": {
+                "en": "User Unlocks the Lock",
+                "no": "Bruker låser opp"
+            },
+            "tokens": [
+                {
+                    "name": "userID",
+                    "type": "number",
+                    "title": {
+                        "en": "User ID",
+                        "no": "Bruker-ID"
+                    },
+                    "example": 5
+                },
+                {
+                    "name": "method",
+                    "type": "string",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "example": "Keypad"
+                }
+            ]
+        },
+        {
+            "id": "lockWithSpecificMethod",
+            "title": {
+                "en": "Lock was Locked with Specific Method",
+                "no": "Låsen ble låst med spesifikk metode"
+            },
+            "titleFormatted": {
+                "en": "Lock was Locked with [[method]]",
+                "no": "Låsen ble låst med [[method]]"
+            },
+            "args": [
+                {
+                    "type": "dropdown",
+                    "name": "method",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "values": [
+                        {
+                            "id": "Keypad",
+                            "title": {
+                                "en": "Keypad",
+                                "no": "Tastatur"
+                            }
+                        },
+                        {
+                            "id": "RF",
+                            "title": {
+                                "en": "RF",
+                                "no": "RF"
+                            }
+                        },
+                        {
+                            "id": "Manual",
+                            "title": {
+                                "en": "Manual",
+                                "no": "Manuell"
+                            }
+                        },
+                        {
+                            "id": "RFID",
+                            "title": {
+                                "en": "RFID",
+                                "no": "RFID"
+                            }
+                        },
+                        {
+                            "id": "Fingerprint",
+                            "title": {
+                                "en": "Fingerprint",
+                                "no": "Fingeravtrykk"
+                            }
+                        },
+                        {
+                            "id": "Indeterminate",
+                            "title": {
+                                "en": "Indeterminate",
+                                "no": "Uspesifisert"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "userID",
+                    "type": "number",
+                    "title": {
+                        "en": "User ID",
+                        "no": "Bruker-ID"
+                    },
+                    "example": 5
+                },
+                {
+                    "name": "method",
+                    "type": "string",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "example": "Keypad"
+                }
+            ]
+        },
+        {
+            "id": "unlockWithSpecificMethod",
+            "title": {
+                "en": "Lock was Unlocked with Specific Method",
+                "no": "Låsen ble låst opp med spesifikk metode"
+            },
+            "titleFormatted": {
+                "en": "Lock was Unlocked with [[method]]",
+                "no": "Låsen ble låst opp med [[method]]"
+            },
+            "args": [
+                {
+                    "type": "dropdown",
+                    "name": "method",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "values": [
+                        {
+                            "id": "Keypad",
+                            "title": {
+                                "en": "Keypad",
+                                "no": "Tastatur"
+                            }
+                        },
+                        {
+                            "id": "RF",
+                            "title": {
+                                "en": "RF",
+                                "no": "RF"
+                            }
+                        },
+                        {
+                            "id": "Manual",
+                            "title": {
+                                "en": "Manual",
+                                "no": "Manuell"
+                            }
+                        },
+                        {
+                            "id": "RFID",
+                            "title": {
+                                "en": "RFID",
+                                "no": "RFID"
+                            }
+                        },
+                        {
+                            "id": "Fingerprint",
+                            "title": {
+                                "en": "Fingerprint",
+                                "no": "Fingeravtrykk"
+                            }
+                        },
+                        {
+                            "id": "Indeterminate",
+                            "title": {
+                                "en": "Indeterminate",
+                                "no": "Uspesifisert"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "userID",
+                    "type": "number",
+                    "title": {
+                        "en": "User ID",
+                        "no": "Bruker-ID"
+                    },
+                    "example": 5
+                },
+                {
+                    "name": "method",
+                    "type": "string",
+                    "title": {
+                        "en": "Method",
+                        "no": "Metode"
+                    },
+                    "example": "Keypad"
+                }
+            ]
         }
     ]
 }

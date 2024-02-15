@@ -6,7 +6,6 @@
     "class": "lock",
     "capabilities": [
         "measure_battery",
-        "alarm_battery",
         "locked"
     ],
     "platforms": [

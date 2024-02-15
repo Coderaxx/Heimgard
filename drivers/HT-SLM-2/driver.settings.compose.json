@@ -30,23 +30,5 @@
                 }
             }
         ]
-    },
-    {
-        "id": "batteryThreshold",
-        "type": "number",
-        "label": {
-            "en": "Low Battery Alarm Threshold (%)",
-            "no": "Lavt batteri alarm terskel (%)"
-        },
-        "hint": {
-            "en": "This setting determines the threshold before a battery alarm is given.",
-            "no": "Denne innstillingen bestemmer når lavt batteri alarm skal gis."
-        },
-        "value": 20,
-        "attr": {
-            "step": 1,
-            "min": 1,
-            "max": 99
-        }
     }
 ]
