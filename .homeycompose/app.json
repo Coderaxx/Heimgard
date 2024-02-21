@@ -56,5 +56,10 @@
       "smartlås"
     ]
   },
-  "source": "https://github.com/Coderaxx/Heimgard"
+  "source": "https://github.com/Coderaxx/Heimgard",
+  "homepage": "https://heimgard.com/",
+  "support": "https://heimgard.com/support",
+  "bugs": {
+    "url": "https://github.com/Coderaxx/Heimgard/issues"
+  }
 }
