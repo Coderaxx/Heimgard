@@ -58,6 +58,11 @@
     ]
   },
   "source": "https://github.com/Coderaxx/Heimgard",
+  "homepage": "https://heimgard.com/",
+  "support": "https://heimgard.com/support",
+  "bugs": {
+    "url": "https://github.com/Coderaxx/Heimgard/issues"
+  },
   "flow": {
     "triggers": [
       {
