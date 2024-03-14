@@ -4,7 +4,8 @@
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
-    "local"
+    "local",
+    "cloud"
   ],
   "name": {
     "en": "Heimgard",
